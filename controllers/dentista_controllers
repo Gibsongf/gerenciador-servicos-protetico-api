@@ -1,0 +1,77 @@
+const asyncHandler = require("express-async-handler");
+const { body, validationResult } = require("express-validator");
+const Dentista = require("../models/dentista");
+const Local = require("../models/local");
+
+exports.todos = asyncHandler(async (req, res) => {
+    const all = await Dentista.find().sort({ nome: 1 }).exec();
+    if (!all) {
+        res.sendStatus(404);
+    }
+    res.status(200).json({
+        todos_dentistas: all,
+    });
+});
+
+exports.individual_detalhes = asyncHandler(async (req, res) => {
+    const dentista = await Dentista.findById(req.user.id)
+        .populate("serviços")
+        .populate("local")
+        .exec();
+    if (!dentista) {
+        res.sendStatus(404);
+    }
+    res.status(200).json({ dentista });
+});
+// isPostalCode(locale: 'BR'): ValidationChain CEP ?
+
+exports.novo = [
+    body("nome")
+        .trim()
+        .isLength({ min: 3 })
+        .withMessage("O Nome tem que ser especificado"),
+    body("sobrenome").trim(),
+    body("local")
+        .trim()
+        .isEmpty()
+        .withMessage("O Local tem que ser especificado"),
+    body("celular")
+        .trim()
+        .escape()
+        .isNumeric()
+        .withMessage("São aceito apenas números")
+        //DDD SEMPRE 011
+        .isLength({ max: 9, min: 8 })
+        .withMessage("O Número fornecido deve ter 8 ou 9 dígitos."),
+    body("cpf")
+        .trim()
+        .escape()
+        .isNumeric()
+        .isLength({ max: 11, min: 11 })
+        .withMessage("O CPF fornecido deve ter 11 dígitos."),
+    asyncHandler(async (req, res) => {
+        const err = validationResult(req);
+        const notNew = await Dentista.find({ cpf: req.body.cpf }).exec();
+        const local = await Local.findById(req.body.local).exec();
+        if (notNew) {
+            res.send("CPF JÁ REGISTRADO");
+        }
+
+        const dentista = new Dentista({
+            nome: req.body.nome, //require true
+            sobrenome: req.body.sobrenome,
+            tipo_de_tabela: { type: String, default: "Normal" },
+            local: local._id, //require true
+            celular: req.body.celular,
+            cpf: req.body.cpf, //require true
+        });
+
+        if (!err.isEmpty()) {
+            console.log(err);
+            res.send(404);
+        } else {
+            // await dentista.save()
+            res.send("saved");
+        }
+    }),
+];
