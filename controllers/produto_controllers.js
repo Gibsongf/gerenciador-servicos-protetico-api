@@ -8,15 +8,25 @@ const Paciente = require("../models/paciente");
 
 // Read
 // Todos os produtos
-exports.todos = asyncHandler(async (req, res) => {});
+exports.todos = asyncHandler(async (req, res) => {
+    res.send("Not implemented 'todos produtos'");
+});
 // Detalhes de um produto
-exports.detalhes = asyncHandler(async (req, res) => {});
+exports.detalhes = asyncHandler(async (req, res) => {
+    res.send("Not implemented 'detalhes produto'");
+});
 // Create
 // Adicionar um novo produto
-exports.novo = asyncHandler(async (req, res) => {});
+exports.novo = asyncHandler(async (req, res) => {
+    res.send("Not implemented 'novo produto'");
+});
 // Update
 // Modificar um produto existente
-exports.modificar = asyncHandler(async (req, res) => {});
+exports.modificar = asyncHandler(async (req, res) => {
+    res.send("Not implemented 'modificar produto'");
+});
 // Delete
 // Deletar um produto
-exports.deletar = asyncHandler(async (req, res) => {});
+exports.deletar = asyncHandler(async (req, res) => {
+    res.send("Not implemented 'deletar produto'");
+});
