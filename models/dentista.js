@@ -6,9 +6,8 @@ const DentistaSchema = new Schema({
     sobrenome: { type: String },
     //serviços ou encomendas ?
     // serviços: { type: Schema.Types.ObjectId },
-    tipo_de_tabela: { type: String, default: "Normal" },
     local: { type: Schema.Types.ObjectId, require: true },
-    celular: { type: Number },
+    telefone: { type: String, maxLength: 10, minLength: 8 },
     cpf: {
         type: String,
         required: true,
