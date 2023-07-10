@@ -29,7 +29,6 @@ exports.detalhes = asyncHandler(async (req, res) => {
     res.status(200).json({ dentista, serviços });
 });
 // isPostalCode(locale: 'BR'): ValidationChain CEP ?
-
 exports.novo = [
     body("nome")
         .trim()
