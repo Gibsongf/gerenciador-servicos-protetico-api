@@ -3,7 +3,6 @@ const { body, validationResult } = require("express-validator");
 const Dentista = require("../models/dentista");
 const Local = require("../models/local");
 const Serviço = require("../models/serviço");
-
 const Utility = require("../utility");
 exports.todos = asyncHandler(async (req, res) => {
     const all = await Dentista.find().sort({ nome: 1 }).exec();
