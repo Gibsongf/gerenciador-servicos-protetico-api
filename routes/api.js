@@ -14,6 +14,8 @@ router.get("/test-produtos", produto_controllers.test);
 
 /* GET users listing. */
 router.get("/todos-dentistas", dentista_controllers.todos);
+router.get("/dentista/:id", dentista_controllers.detalhes);
+
 router.get("/todos-locais", local_controllers.todos);
 router.get("/todos-pacientes", paciente_controllers.todos);
 router.get("/todos-serviços", serviço_controllers.todos);

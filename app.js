@@ -3,12 +3,10 @@ const express = require("express");
 const path = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
-
-const userRouter = require("./routes/user");
+const userRouter = require("./routes");
 const apiRouter = require("./routes/api");
-const Utility = require("./utility");
 const app = express();
-
+require("./mongoConfig");
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
@@ -37,5 +35,4 @@ app.use(function (err, req, res, next) {
     res.status(err.status || 500);
     res.render("error");
 });
-Utility.connectDB();
 module.exports = app;

@@ -1,10 +1,10 @@
 const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
-const Dentista = require("../models/dentista");
+// const Dentista = require("../models/dentista");
 const Local = require("../models/local");
-const Serviço = require("../models/serviço");
-const Utility = require("../utility");
-const Paciente = require("../models/paciente");
+// const Serviço = require("../models/serviço");
+// const Utility = require("../utility");
+// const Paciente = require("../models/paciente");
 
 // Route Test
 exports.test = asyncHandler(async (req, res) => {
@@ -14,7 +14,14 @@ exports.test = asyncHandler(async (req, res) => {
 // Read
 // Todos os locais
 exports.todos = asyncHandler(async (req, res) => {
-    res.json({ message: "Not implemented 'todos locais'" });
+    const all = await Local.find().sort({ nome: 1 }).exec();
+    if (!all) {
+        res.sendStatus(404);
+    }
+    res.status(200).json({
+        todos_locais: all,
+    });
+    // res.json({ message: "Not implemented 'todos locais'" });
 });
 // Detalhes de um local
 exports.detalhes = asyncHandler(async (req, res) => {

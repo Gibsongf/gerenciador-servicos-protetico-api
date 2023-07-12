@@ -21,7 +21,7 @@ exports.todos = asyncHandler(async (req, res) => {
 });
 
 exports.detalhes = asyncHandler(async (req, res) => {
-    const dentista = await Dentista.findById(req.user.id)
+    const dentista = await Dentista.findById(req.params.id)
         .populate("local")
         .exec();
     const serviços = await Serviço.find({ dentista: dentista._id })

@@ -1,10 +1,6 @@
 const request = require("supertest");
-const express = require("express");
-const apiRoute = require("../routes/api");
-const app = express();
+const app = require("./appTest");
 
-app.use(express.urlencoded({ extended: false }));
-app.use("/api", apiRoute);
 describe("api routes", () => {
     const allRoutes = [
         {
