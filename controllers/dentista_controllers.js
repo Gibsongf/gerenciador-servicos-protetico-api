@@ -4,6 +4,12 @@ const Dentista = require("../models/dentista");
 const Local = require("../models/local");
 const Serviço = require("../models/serviço");
 const Utility = require("../utility");
+
+// Route Test
+exports.test = asyncHandler(async (req, res) => {
+    res.json({ message: "Test Dentista" });
+});
+
 exports.todos = asyncHandler(async (req, res) => {
     const all = await Dentista.find().sort({ nome: 1 }).exec();
     if (!all) {

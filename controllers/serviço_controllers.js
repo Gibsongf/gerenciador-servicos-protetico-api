@@ -6,6 +6,10 @@ const Serviço = require("../models/serviço");
 const Utility = require("../utility");
 const Paciente = require("../models/paciente");
 
+// Route Test
+exports.test = asyncHandler(async (req, res) => {
+    res.json({ message: "Test Serviço" });
+});
 // Read
 // Todos os serviços
 exports.todos = asyncHandler(async (req, res) => {
