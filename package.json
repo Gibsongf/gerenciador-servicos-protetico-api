@@ -2,11 +2,17 @@
   "name": "gerenciador-servicos-proteticos",
   "version": "0.0.0",
   "private": true,
+  "config": {
+    "mongodbMemoryServer": {
+      "version": "4.4.0"
+    }
+  },
+  
   "scripts": {
     "start": "node ./bin/www",
     "devstart": "nodemon ./bin/www",
     "serverstart": "DEBUG=express-locallibrary-tutorial:* npm run devstart",
-    "testwatch": "jest --watch *.js"
+    "testwatch": "jest --watch *.js  --detectOpenHandles --forceExit "
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
