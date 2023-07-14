@@ -4,14 +4,14 @@ const Dentista = require("../models/dentista");
 const Local = require("../models/local");
 const Serviço = require("../models/serviço");
 const Utility = require("../utility");
-
+const { ObjectId } = require("mongodb");
 // Route Test
 exports.test = asyncHandler(async (req, res) => {
     res.json({ message: "Test Dentista" });
 });
 
 exports.todos = asyncHandler(async (req, res) => {
-    const all = await Dentista.find().sort({ nome: 1 }).exec();
+    const all = await Dentista.find().exec(); //.sort({ nome: 1 })
     if (!all) {
         res.sendStatus(404);
     }
@@ -42,15 +42,16 @@ exports.novo = [
     body("sobrenome").trim(),
     body("local")
         .trim()
+        .not()
         .isEmpty()
         .withMessage("O Local tem que ser especificado"),
-    body("celular")
+    body("telefone")
         .trim()
         .escape()
-        .isNumeric()
+        .isString()
         .withMessage("São aceito apenas números")
         //DDD SEMPRE 011
-        .isLength({ max: 9, min: 8 })
+        .isLength({ max: 10, min: 8 })
         .withMessage("O Número fornecido deve ter 8 ou 9 dígitos."),
     body("cpf")
         .trim()
@@ -60,12 +61,10 @@ exports.novo = [
         .withMessage("O CPF fornecido deve ter 11 dígitos."),
     asyncHandler(async (req, res) => {
         const err = validationResult(req);
+
         const notNew = await Dentista.find({ cpf: req.body.cpf }).exec();
         const local = await Local.findById(req.body.local).exec();
-        if (notNew) {
-            res.send("CPF JÁ REGISTRADO");
-        }
-
+        // console.log(local, "local");
         const dentista = new Dentista({
             nome: req.body.nome, //require true
             sobrenome: req.body.sobrenome,
@@ -76,11 +75,12 @@ exports.novo = [
         });
 
         if (!err.isEmpty()) {
-            console.log(err);
+            console.log(err.errors);
             res.json({ errors: err.errors });
         } else {
-            // await dentista.save()
-            res.send("saved");
+            console.log("saved");
+            await dentista.save();
+            res.status(200).json({ message: "Dentista saved", dentista });
         }
     }),
 ];
@@ -121,7 +121,7 @@ exports.edit = [
             console.log(err);
             res.json({ errors: err.errors });
         } else {
-            // await dentista.save()
+            await dentista.save();
             res.send("updated");
         }
     }),

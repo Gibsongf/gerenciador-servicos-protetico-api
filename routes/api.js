@@ -12,9 +12,16 @@ router.get("/test-pacientes", paciente_controllers.test);
 router.get("/test-serviços", serviço_controllers.test);
 router.get("/test-produtos", produto_controllers.test);
 
-/* GET users listing. */
+/*Dentista Route */
+// GET
 router.get("/todos-dentistas", dentista_controllers.todos);
 router.get("/dentista/:id", dentista_controllers.detalhes);
+// POST
+router.post("/dentista/novo", dentista_controllers.novo);
+// PUT
+router.put("/dentista/:id/edit", dentista_controllers.edit);
+// DELETE
+router.delete("/dentista/:id", dentista_controllers.deletar);
 
 router.get("/todos-locais", local_controllers.todos);
 router.get("/todos-pacientes", paciente_controllers.todos);

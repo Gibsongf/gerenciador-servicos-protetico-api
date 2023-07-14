@@ -9,7 +9,7 @@ const DentistaSchema = new Schema({
     local: { type: Schema.Types.ObjectId, require: true },
     telefone: { type: String, maxLength: 10, minLength: 8 },
     cpf: {
-        type: String,
+        type: Number,
         required: true,
         unique: true,
         maxLength: 11,
