@@ -7,7 +7,6 @@ const populateTest = require("../populateDB");
 const mongoose = require("mongoose");
 const initServer = require("./mongoConfigTest");
 
-const { ObjectId } = require("mongodb");
 const { faker } = require("@faker-js/faker");
 app.use(express.urlencoded({ extended: false }));
 app.use("/api", apiRoute);
@@ -42,7 +41,6 @@ describe("/get/ Produto", () => {
 
 describe("/post/ Produto ", () => {
     test("add a new Produto to db", async () => {
-        const objectIdString = new ObjectId(data.local._id).toString();
         const res = await request(app)
             .post("/api/produto/novo")
             .type("form")
@@ -60,7 +58,7 @@ describe("/post/ Produto ", () => {
         expect(res.status).toEqual(200);
     });
 });
-describe.only("/put/ Produto ", () => {
+describe("/put/ Produto ", () => {
     test("modify a Produto", async () => {
         const res = await request(app)
             .put("/api/produto/" + data.produto._id + "/edit")
