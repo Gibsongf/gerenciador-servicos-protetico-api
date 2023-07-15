@@ -93,15 +93,16 @@ exports.edit = [
     body("sobrenome").trim(),
     body("local")
         .trim()
+        .not()
         .isEmpty()
         .withMessage("O Local tem que ser especificado"),
-    body("celular")
+    body("telefone")
         .trim()
         .escape()
-        .isNumeric()
+        .isString()
         .withMessage("São aceito apenas números")
         //DDD SEMPRE 011
-        .isLength({ max: 9, min: 8 })
+        .isLength({ max: 10, min: 8 })
         .withMessage("O Número fornecido deve ter 8 ou 9 dígitos."),
     body("cpf")
         .trim()
@@ -113,16 +114,19 @@ exports.edit = [
         const err = validationResult(req);
         const update = Utility.emptyFields(req.body);
         //'local' to be able to update need to return a id value at forms
-        const dentista = await Dentista.findByIdAndUpdate(req.user.id, update, {
-            new: true,
-        }).exec();
+        const dentista = await Dentista.findByIdAndUpdate(
+            req.params.id,
+            update,
+            {
+                new: true,
+            }
+        ).exec();
 
         if (!err.isEmpty()) {
-            console.log(err);
             res.json({ errors: err.errors });
         } else {
             await dentista.save();
-            res.send("updated");
+            res.status(200).json({ message: "Dentista updated", dentista });
         }
     }),
 ];

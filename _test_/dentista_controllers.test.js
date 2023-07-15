@@ -42,7 +42,7 @@ describe("/get/ dentista", () => {
 });
 
 describe("/post/ Dentista ", () => {
-    test.only("add a new Dentista to db", async () => {
+    test("add a new Dentista to db", async () => {
         const objectIdString = new ObjectId(data.local._id).toString();
         const res = await request(app)
             .post("/api/dentista/novo")
@@ -58,6 +58,29 @@ describe("/post/ Dentista ", () => {
             "application/json; charset=utf-8"
         );
         expect(res.body.message).toEqual("Dentista saved");
+        expect(res.status).toEqual(200);
+    });
+});
+describe("/put/ Dentista ", () => {
+    test("modify a Dentista", async () => {
+        const { local, telefone, cpf } = data.dentista;
+        const objectIdString = new ObjectId(local._id).toString();
+
+        const res = await request(app)
+            .put("/api/dentista/" + data.dentista._id + "/edit")
+            .type("form")
+            .send({
+                nome: "Novo Nome",
+                sobrenome: "Updated",
+                local: objectIdString,
+                telefone,
+                cpf,
+            })
+            .set("Accept", "application/json");
+        expect(res.headers["content-type"]).toEqual(
+            "application/json; charset=utf-8"
+        );
+        expect(res.body.dentista.sobrenome).toEqual("Updated");
         expect(res.status).toEqual(200);
     });
 });
