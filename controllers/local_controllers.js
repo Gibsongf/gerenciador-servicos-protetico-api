@@ -27,7 +27,7 @@ exports.todos = asyncHandler(async (req, res) => {
 exports.detalhes = asyncHandler(async (req, res) => {
     const local = await Local.findById(req.params.id).exec();
     if (!local) {
-        res.sendStatus(404);
+        res.status(404).json({ message: "Local não foi encontrado pela ID" });
     }
     const dentistas = await Dentista.find({ local: local._id }).exec();
 

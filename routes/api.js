@@ -33,11 +33,20 @@ router.post("/local/novo", local_controllers.novo);
 // PUT
 router.put("/local/:id/edit", local_controllers.editar);
 // DELETE
-
 router.delete("/local/:id", local_controllers.deletar);
-router.get("/todos-locais", local_controllers.todos);
+
+/*Produto Route */
+// GET
+router.get("/todos-produtos", produto_controllers.todos);
+router.get("/produto/:id", produto_controllers.detalhes);
+// POST
+router.post("/produto/novo", produto_controllers.novo);
+// PUT
+router.put("/produto/:id/edit", produto_controllers.editar);
+// DELETE
+router.delete("/produto/:id", produto_controllers.deletar);
+
 router.get("/todos-pacientes", paciente_controllers.todos);
 router.get("/todos-serviços", serviço_controllers.todos);
-router.get("/todos-produtos", produto_controllers.todos);
 
 module.exports = router;
