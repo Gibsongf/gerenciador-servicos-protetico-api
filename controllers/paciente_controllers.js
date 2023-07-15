@@ -26,7 +26,7 @@ exports.novo = asyncHandler(async (req, res) => {
 });
 // Update
 // Modificar dados de um paciente
-exports.modificar = asyncHandler(async (req, res) => {
+exports.editar = asyncHandler(async (req, res) => {
     res.send("Not implemented 'modificar paciente'");
 });
 // Delete

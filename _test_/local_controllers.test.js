@@ -7,8 +7,6 @@ const populateTest = require("../populateDB");
 const mongoose = require("mongoose");
 const initServer = require("./mongoConfigTest");
 
-const { ObjectId } = require("mongodb");
-const { faker } = require("@faker-js/faker");
 app.use(express.urlencoded({ extended: false }));
 app.use("/api", apiRoute);
 let data;
@@ -17,70 +15,66 @@ beforeAll(async () => {
     await initServer();
     data = await populateTest();
 });
-describe("/get/ dentista", () => {
-    test("all dentistas", async () => {
-        const res = await request(app).get("/api/todos-dentistas");
+describe("/get/ local", () => {
+    test("all Local", async () => {
+        const res = await request(app).get("/api/todos-locais");
         expect(res.headers["content-type"]).toEqual(
             "application/json; charset=utf-8"
         );
-        expect(res.body["todos_dentistas"][0].cpf).toEqual(data.dentista.cpf);
-        expect(res.body["todos_dentistas"].length).toBe(2);
+        expect(res.body["todos_locais"].length).toBe(2);
         expect(res.status).toEqual(200);
     });
-    test("one dentistas details", async () => {
-        const res = await request(app).get(
-            "/api/dentista/" + data.dentista._id
-        );
+    test("one local details", async () => {
+        const res = await request(app).get("/api/local/" + data.local._id);
         const keys = Object.keys(res.body);
         expect(res.headers["content-type"]).toEqual(
             "application/json; charset=utf-8"
         );
-        expect(keys).toContain("serviços");
-        expect(keys).toContain("dentista");
+        expect(keys).toContain("local");
+        expect(keys).toContain("dentistas");
         expect(res.status).toEqual(200);
     });
 });
 
-describe("/post/ Dentista ", () => {
-    test("add a new Dentista to db", async () => {
-        const objectIdString = new ObjectId(data.local._id).toString();
+describe("/post/ Local ", () => {
+    test("add a new Local to db", async () => {
         const res = await request(app)
-            .post("/api/dentista/novo")
+            .post("/api/local/novo")
             .type("form")
             .send({
-                nome: "Fake",
-                local: objectIdString,
+                nome: "Fake LOCAL",
+                endereço: "avenida Alves Dias",
                 telefone: "4002-8922",
-                cpf: String(faker.phone.number("###########")),
+                cep: "11111-111",
+                tipo_tabela: "Reduzido",
             })
             .set("Accept", "application/json");
         expect(res.headers["content-type"]).toEqual(
             "application/json; charset=utf-8"
         );
-        expect(res.body.message).toEqual("Dentista saved");
+        expect(res.body.message).toEqual("Local saved");
         expect(res.status).toEqual(200);
     });
 });
-describe("/put/ Dentista ", () => {
-    test("modify a Dentista", async () => {
-        const { local, telefone, cpf } = data.dentista;
-        const objectIdString = new ObjectId(local._id).toString();
-
+describe("/put/ Local ", () => {
+    test.only("modify a Local", async () => {
         const res = await request(app)
-            .put("/api/dentista/" + data.dentista._id + "/edit")
+            .put("/api/local/" + data.local._id + "/edit")
             .type("form")
             .send({
-                nome: "Novo Nome",
-                sobrenome: "Updated",
-                local: objectIdString,
-                telefone,
-                cpf,
+                nome: "Fake Name",
+                endereço: "Updated",
+                telefone: "4002-8922",
+                cep: "11111-111",
+                tipo_tabela: "Normal",
             })
             .set("Accept", "application/json");
         expect(res.headers["content-type"]).toEqual(
             "application/json; charset=utf-8"
         );
-        expect(res.body.dentista.sobrenome).toEqual("Updated");
+        expect(res.body.message).toEqual("Local updated");
+        expect(res.body.local.endereço).toEqual("Updated");
+        expect(res.body.local.tipo_tabela).toEqual("Normal");
         expect(res.status).toEqual(200);
     });
 });

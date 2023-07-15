@@ -40,7 +40,7 @@ exports.novo = [
         .isLength({ min: 3 })
         .withMessage("O Nome tem que ser especificado"),
     body("sobrenome").trim(),
-    body("local")
+    body("local") //isMongoId()
         .trim()
         .not()
         .isEmpty()
@@ -62,7 +62,6 @@ exports.novo = [
     asyncHandler(async (req, res) => {
         const err = validationResult(req);
 
-        const notNew = await Dentista.find({ cpf: req.body.cpf }).exec();
         const local = await Local.findById(req.body.local).exec();
         // console.log(local, "local");
         const dentista = new Dentista({
@@ -85,7 +84,7 @@ exports.novo = [
     }),
 ];
 
-exports.edit = [
+exports.editar = [
     body("nome")
         .trim()
         .isLength({ min: 3 })
