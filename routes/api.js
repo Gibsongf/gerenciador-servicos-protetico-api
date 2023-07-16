@@ -57,7 +57,16 @@ router.put("/paciente/:id/edit", paciente_controllers.editar);
 // DELETE
 router.delete("/paciente/:id", paciente_controllers.deletar);
 
-router.get("/todos-pacientes", paciente_controllers.todos);
-router.get("/todos-serviços", serviço_controllers.todos);
+/*Serviço Route */
+// // GET
+// router.get("/todos-servicos", serviço_controllers.todos);
+// router.get("/servico/:id", serviço_controllers.detalhes);
+// // POST
+// router.post("/servico/novo", serviço_controllers.novo);
+// // PUT
+// router.put("/servico/:id/edit", serviço_controllers.editar);
+// // DELETE
+// router.delete("/servico/:id", serviço_controllers.deletar);
 
+router.use("/servico", require("./serviço"));
 module.exports = router;
