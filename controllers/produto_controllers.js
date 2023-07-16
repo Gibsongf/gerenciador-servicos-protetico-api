@@ -1,10 +1,10 @@
 const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
-const Dentista = require("../models/dentista");
-const Local = require("../models/local");
+// const Dentista = require("../models/dentista");
+// const Local = require("../models/local");
 const Serviço = require("../models/serviço");
 const Utility = require("../utility");
-const Paciente = require("../models/paciente");
+// const Paciente = require("../models/paciente");
 const Produto = require("../models/produto");
 
 // Route Test
@@ -45,6 +45,9 @@ exports.novo = [
     body("valor normal")
         .notEmpty()
         .withMessage("Valor normal nao especificado")
+        .isNumeric()
+        .withMessage("São aceitos apenas números"),
+    body("valor reduzido")
         .isNumeric()
         .withMessage("São aceitos apenas números"),
     asyncHandler(async (req, res) => {

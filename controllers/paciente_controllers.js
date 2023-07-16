@@ -13,22 +13,120 @@ exports.test = asyncHandler(async (req, res) => {
 // Read
 // Todos os pacientes
 exports.todos = asyncHandler(async (req, res) => {
-    res.send("Not implemented 'todos pacientes'");
+    const all = await Paciente.find().sort({ nome: 1 }).exec();
+    if (!all) {
+        res.sendStatus(404);
+    }
+    res.status(200).json({
+        todos_pacientes: all,
+    });
+    // res.json({ message: "Not implemented 'todos locais'" });
 });
 // Detalhes sobre um paciente
 exports.detalhes = asyncHandler(async (req, res) => {
-    res.send("Not implemented 'detalhes paciente'");
+    const paciente = await Paciente.findById(req.params.id)
+        .populate("dentista")
+        .populate("produto")
+        .exec();
+    if (!paciente) {
+        res.status(404).json({
+            message: "Paciente não foi encontrado pela ID",
+        });
+    }
+
+    const serviço = await Serviço.find({ paciente: paciente._id }).exec();
+    res.status(200).json({
+        paciente,
+        dentista: paciente.dentista,
+        produto: paciente.produto,
+        serviço,
+    });
 });
 // Create
 // Adicionar um novo paciente
-exports.novo = asyncHandler(async (req, res) => {
-    res.send("Not implemented 'novo paciente'");
-});
+exports.novo = [
+    // Convert the produto to an array.
+    (req, res, next) => {
+        if (!(req.body.produto instanceof Array)) {
+            if (typeof req.body.produto === "undefined") {
+                req.body.produto = [];
+            } else {
+                req.body.produto = new Array(req.body.produto);
+            }
+        }
+        next();
+    },
+    body("nome")
+        .trim()
+        .notEmpty()
+        .isLength({ min: 3 })
+        .withMessage("O Nome tem que ser especificado"),
+    body("dentista")
+        .notEmpty()
+        .withMessage("Dentista não especificado")
+        .isMongoId()
+        .withMessage("Dentista não encontrado na database"),
+    asyncHandler(async (req, res) => {
+        const err = validationResult(req);
+        const paciente = new Paciente({
+            nome: req.body.nome, //require true
+            dentista: req.body.dentista,
+            produto: req.body.produto,
+        });
+        if (!err.isEmpty()) {
+            console.log(err.errors);
+            res.json({ errors: err.errors });
+        } else {
+            console.log("saved");
+            await paciente.save();
+            res.status(200).json({ message: "Paciente saved", paciente });
+        }
+    }),
+];
 // Update
 // Modificar dados de um paciente
-exports.editar = asyncHandler(async (req, res) => {
-    res.send("Not implemented 'modificar paciente'");
-});
+exports.editar = [
+    body("nome")
+        .trim()
+        .notEmpty()
+        .isLength({ min: 3 })
+        .withMessage("O Nome tem que ser especificado"),
+    body("dentista")
+        .notEmpty()
+        .withMessage("Dentista não especificado")
+        .isMongoId()
+        .withMessage("Dentista não encontrado na database"),
+    // Convert the produto to an array.
+    (req, res, next) => {
+        if (!(req.body.produto instanceof Array)) {
+            if (typeof req.body.produto === "undefined") {
+                req.body.produto = [];
+            } else {
+                req.body.produto = new Array(req.body.produto);
+            }
+        }
+        next();
+    },
+    asyncHandler(async (req, res) => {
+        const err = validationResult(req);
+        const update = Utility.emptyFields(req.body);
+        //'local' to be able to update need to return a id value at forms
+        const paciente = await Paciente.findByIdAndUpdate(
+            req.params.id,
+            update,
+            {
+                new: true,
+            }
+        ).exec();
+        if (!err.isEmpty()) {
+            console.log(err.errors);
+            res.json({ errors: err.errors });
+        } else {
+            await paciente.save();
+            res.status(200).json({ message: "Paciente updated", paciente });
+        }
+    }),
+];
 // Delete
 // Excluir um paciente
 exports.deletar = asyncHandler(async (req, res) => {

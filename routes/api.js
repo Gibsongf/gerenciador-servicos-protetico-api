@@ -46,6 +46,17 @@ router.put("/produto/:id/edit", produto_controllers.editar);
 // DELETE
 router.delete("/produto/:id", produto_controllers.deletar);
 
+/*Paciente Route */
+// GET
+router.get("/todos-pacientes", paciente_controllers.todos);
+router.get("/paciente/:id", paciente_controllers.detalhes);
+// POST
+router.post("/paciente/novo", paciente_controllers.novo);
+// PUT
+router.put("/paciente/:id/edit", paciente_controllers.editar);
+// DELETE
+router.delete("/paciente/:id", paciente_controllers.deletar);
+
 router.get("/todos-pacientes", paciente_controllers.todos);
 router.get("/todos-serviços", serviço_controllers.todos);
 
