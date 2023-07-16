@@ -19,7 +19,7 @@ beforeAll(async () => {
 });
 describe("/get/ Paciente", () => {
     test("all Pacientes", async () => {
-        const res = await request(app).get("/api/todos-pacientes");
+        const res = await request(app).get("/api/paciente/todos");
         expect(res.headers["content-type"]).toEqual(
             "application/json; charset=utf-8"
         );

@@ -17,7 +17,7 @@ beforeAll(async () => {
 });
 describe("/get/ local", () => {
     test("all Local", async () => {
-        const res = await request(app).get("/api/todos-locais");
+        const res = await request(app).get("/api/local/todos");
         expect(res.headers["content-type"]).toEqual(
             "application/json; charset=utf-8"
         );
@@ -57,7 +57,7 @@ describe("/post/ Local ", () => {
     });
 });
 describe("/put/ Local ", () => {
-    test.only("modify a Local", async () => {
+    test("modify a Local", async () => {
         const res = await request(app)
             .put("/api/local/" + data.local._id + "/edit")
             .type("form")

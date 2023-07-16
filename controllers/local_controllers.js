@@ -71,7 +71,7 @@ exports.novo = [
             console.log(err.errors);
             res.json({ errors: err.errors });
         } else {
-            console.log("saved");
+            // console.log("saved");
             await local.save();
             res.status(200).json({
                 message: "Local saved",

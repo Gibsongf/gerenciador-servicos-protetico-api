@@ -18,7 +18,7 @@ beforeAll(async () => {
 });
 describe("/get/ Produto", () => {
     test("all Produtos", async () => {
-        const res = await request(app).get("/api/todos-produtos");
+        const res = await request(app).get("/api/produto/todos");
         expect(res.headers["content-type"]).toEqual(
             "application/json; charset=utf-8"
         );

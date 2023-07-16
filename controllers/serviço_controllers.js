@@ -66,7 +66,7 @@ exports.novo = [
             console.log(err.errors);
             res.json({ errors: err.errors });
         } else {
-            console.log("saved");
+            // console.log("saved");
             await serviço.save();
             res.status(200).json({ message: "Serviço Saved", serviço });
         }

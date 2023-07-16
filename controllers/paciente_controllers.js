@@ -77,7 +77,7 @@ exports.novo = [
             console.log(err.errors);
             res.json({ errors: err.errors });
         } else {
-            console.log("saved");
+            // console.log("saved");
             await paciente.save();
             res.status(200).json({ message: "Paciente saved", paciente });
         }

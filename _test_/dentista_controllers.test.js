@@ -19,7 +19,7 @@ beforeAll(async () => {
 });
 describe("/get/ dentista", () => {
     test("all dentistas", async () => {
-        const res = await request(app).get("/api/todos-dentistas");
+        const res = await request(app).get("/api/dentista/todos");
         expect(res.headers["content-type"]).toEqual(
             "application/json; charset=utf-8"
         );
