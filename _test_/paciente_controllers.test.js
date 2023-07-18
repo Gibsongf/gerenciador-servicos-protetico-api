@@ -1,6 +1,4 @@
 const request = require("supertest");
-const express = require("express");
-const apiRoute = require("../routes/api");
 const app = require("../utils/appTest");
 
 const populateTest = require("../utils/populateDB");
@@ -8,9 +6,6 @@ const mongoose = require("mongoose");
 const initServer = require("../utils/mongoConfigTest");
 
 const { ObjectId } = require("mongodb");
-const { faker } = require("@faker-js/faker");
-app.use(express.urlencoded({ extended: false }));
-app.use("/api", apiRoute);
 let data;
 
 beforeAll(async () => {
