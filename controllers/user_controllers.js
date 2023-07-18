@@ -32,3 +32,12 @@ exports.register = [
         }
     }),
 ];
+
+exports.login = asyncHandler(async (req, res) => {
+    const user = new User({
+        username: req.body.username,
+        password: req.body.password,
+    });
+    console.log("asda");
+    res.json({ msg: "successfully login" });
+});

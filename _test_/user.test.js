@@ -27,4 +27,20 @@ describe("/post/ User", () => {
         expect(res.body.message).toEqual("User register completed");
         expect(res.status).toEqual(200);
     });
+    test.only("user login successfully", async () => {
+        // console.log(data);
+        const res = await request(app)
+            .post("/user/login")
+            .type("form")
+            .send({
+                username: data.usuario,
+                password: data.senha,
+            })
+            .set("Accept", "application/json");
+        expect(res.headers["content-type"]).toEqual(
+            "application/json; charset=utf-8"
+        );
+        expect(res.body.user.username).toEqual("user123");
+        expect(res.status).toEqual(200);
+    });
 });
