@@ -1,11 +1,11 @@
 const request = require("supertest");
 const express = require("express");
 const apiRoute = require("../routes/api");
-const app = require("./appTest");
+const app = require("../utils/appTest");
 
-const populateTest = require("../populateDB");
+const populateTest = require("../utils/populateDB");
 const mongoose = require("mongoose");
-const initServer = require("./mongoConfigTest");
+const initServer = require("../utils/mongoConfigTest");
 
 app.use(express.urlencoded({ extended: false }));
 app.use("/api", apiRoute);

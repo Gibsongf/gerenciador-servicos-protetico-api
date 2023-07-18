@@ -3,7 +3,7 @@ const { body, validationResult } = require("express-validator");
 const Dentista = require("../models/dentista");
 const Local = require("../models/local");
 const Serviço = require("../models/serviço");
-const Utility = require("../utility");
+const Utility = require("../utils/utility");
 const { ObjectId } = require("mongodb");
 // Route Test
 exports.test = asyncHandler(async (req, res) => {
