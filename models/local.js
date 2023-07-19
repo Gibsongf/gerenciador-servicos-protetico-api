@@ -2,7 +2,6 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const LocalSchema = new Schema({
-    //franquia ou nome ?
     nome: { type: String },
     endereço: { type: String, require: true },
     cep: { type: String, maxLength: 9, minLength: 9, require: true },

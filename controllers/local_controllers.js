@@ -121,5 +121,22 @@ exports.editar = [
 // Delete
 // Deletar um local existente
 exports.deletar = asyncHandler(async (req, res) => {
-    res.json({ message: "Not implemented 'deletar local'" });
+    const [local, dentistWorksInfo] = await Promise.all([
+        Local.findById(req.params.id).exec(),
+        Dentista.find({ local: req.params.id }),
+    ]);
+    if (dentistWorksInfo.length > 0) {
+        // If there are associated Dentista, handle the response accordingly
+        return res.status(409).json({
+            status: "error",
+            message:
+                "Local cannot be deleted because there are associated Dentista",
+        });
+    } else {
+        await Local.findByIdAndRemove(req.params.id).exec();
+        res.status(200).json({
+            status: "success",
+            message: "Local deletado.",
+        });
+    }
 });

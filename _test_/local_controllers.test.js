@@ -10,6 +10,7 @@ let data;
 beforeAll(async () => {
     await initServer();
     data = await populateTest();
+    // console.log(data);
 });
 describe("/get/ local", () => {
     test("all Local", async () => {
@@ -17,7 +18,7 @@ describe("/get/ local", () => {
         expect(res.headers["content-type"]).toEqual(
             "application/json; charset=utf-8"
         );
-        expect(res.body["todos_locais"].length).toBe(2);
+        expect(res.body["todos_locais"].length).toBe(1);
         expect(res.status).toEqual(200);
     });
     test("one local details", async () => {
@@ -72,6 +73,18 @@ describe("/put/ Local ", () => {
         expect(res.body.local.endereço).toEqual("Updated");
         expect(res.body.local.tipo_tabela).toEqual("Normal");
         expect(res.status).toEqual(200);
+    });
+});
+
+describe("/delete/ Local", () => {
+    test("Cant delete Local if has associated Dentista in the db", async () => {
+        const res = await request(app)
+            .delete("/api/local/" + data.local._id)
+            .set("Accept", "application/json");
+        expect(res.headers["content-type"]).toEqual(
+            "application/json; charset=utf-8"
+        );
+        expect(res.status).toEqual(409);
     });
 });
 afterAll(async () => {

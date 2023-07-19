@@ -99,5 +99,21 @@ exports.editar = [
 // Delete
 // Deletar um produto
 exports.deletar = asyncHandler(async (req, res) => {
-    res.send("Not implemented 'deletar produto'");
+    const [produto, produtoInServices] = await Promise.all([
+        Produto.findById(req.params.id).exec(),
+        Serviço.find({ produto: req.params.id }),
+    ]);
+    if (produtoInServices.length > 0) {
+        return res.status(409).json({
+            status: "error",
+            message:
+                "Produto cannot be deleted because there are associated with Serviço",
+        });
+    } else {
+        await Paciente.findByIdAndRemove(req.params.id).exec();
+        res.status(200).json({
+            status: "success",
+            message: "Produto deletado.",
+        });
+    }
 });

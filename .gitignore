@@ -1,6 +1,6 @@
 node_modules
 .env
 pseudo-code
-populateDB.js
+utils/populateDB.js
 TODO
 excludeRoutes.js

@@ -42,8 +42,7 @@ exports.novo = [
     body("sobrenome").trim(),
     body("local") //isMongoId()
         .trim()
-        .not()
-        .isEmpty()
+        .notEmpty()
         .withMessage("O Local tem que ser especificado"),
     body("telefone")
         .trim()
@@ -63,7 +62,6 @@ exports.novo = [
         const err = validationResult(req);
 
         const local = await Local.findById(req.body.local).exec();
-        // console.log(local, "local");
         const dentista = new Dentista({
             nome: req.body.nome, //require true
             sobrenome: req.body.sobrenome,
@@ -92,8 +90,7 @@ exports.editar = [
     body("sobrenome").trim(),
     body("local")
         .trim()
-        .not()
-        .isEmpty()
+        .notEmpty()
         .withMessage("O Local tem que ser especificado"),
     body("telefone")
         .trim()
@@ -131,10 +128,22 @@ exports.editar = [
 ];
 
 exports.deletar = asyncHandler(async (req, res) => {
-    const dentista = await Dentista.findByIdAndRemove(req.params.id).exec();
-
-    res.status(200).json({
-        status: "success",
-        message: "Dentista deletado .",
-    });
+    const [dentista, dentistServices] = await Promise.all([
+        Dentista.findById(req.params.id).exec(),
+        Serviço.find({ dentista: req.params.id }),
+    ]);
+    if (dentistServices.length > 0) {
+        // If there are associated "Serviço", handle the response accordingly
+        return res.status(409).json({
+            status: "error",
+            message:
+                "Dentista cannot be deleted because there are associated Serviço",
+        });
+    } else {
+        await Dentista.findByIdAndRemove(req.params.id).exec();
+        res.status(200).json({
+            status: "success",
+            message: "Dentista deletado.",
+        });
+    }
 });

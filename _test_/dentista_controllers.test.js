@@ -19,7 +19,7 @@ describe("/get/ dentista", () => {
             "application/json; charset=utf-8"
         );
         expect(res.body["todos_dentistas"][0].cpf).toEqual(data.dentista.cpf);
-        expect(res.body["todos_dentistas"].length).toBe(2);
+        expect(res.body["todos_dentistas"].length).toBe(1);
         expect(res.status).toEqual(200);
     });
     test("one dentistas details", async () => {
@@ -77,6 +77,17 @@ describe("/put/ Dentista ", () => {
         );
         expect(res.body.dentista.sobrenome).toEqual("Updated");
         expect(res.status).toEqual(200);
+    });
+});
+describe("/delete/ Dentista", () => {
+    test("Cant delete Dentista if has associated Serviço in the db", async () => {
+        const res = await request(app)
+            .delete("/api/dentista/" + data.dentista._id)
+            .set("Accept", "application/json");
+        expect(res.headers["content-type"]).toEqual(
+            "application/json; charset=utf-8"
+        );
+        expect(res.status).toEqual(409);
     });
 });
 afterAll(async () => {

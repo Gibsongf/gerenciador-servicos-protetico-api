@@ -130,5 +130,21 @@ exports.editar = [
 // Delete
 // Excluir um paciente
 exports.deletar = asyncHandler(async (req, res) => {
-    res.send("Not implemented 'deletar paciente'");
+    const [paciente, pacienteServices] = await Promise.all([
+        Paciente.findById(req.params.id).exec(),
+        Serviço.find({ paciente: req.params.id }),
+    ]);
+    if (pacienteServices.length > 0) {
+        return res.status(409).json({
+            status: "error",
+            message:
+                "Paciente cannot be deleted because there are associated with Serviço",
+        });
+    } else {
+        await Paciente.findByIdAndRemove(req.params.id).exec();
+        res.status(200).json({
+            status: "success",
+            message: "Paciente deletado.",
+        });
+    }
 });

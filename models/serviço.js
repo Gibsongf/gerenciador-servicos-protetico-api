@@ -6,7 +6,6 @@ const ServiçoSchema = new Schema({
     paciente: { type: Schema.Types.ObjectId, ref: "Paciente", require: true },
     produto: [{ type: Schema.Types.ObjectId, ref: "Produto" }],
     statusEntrega: { type: Boolean, require: true, default: false },
-    // tipo_de_tabela: { type: String, default: "Normal" },
 });
 
 module.exports = mongoose.model("Serviço", ServiçoSchema);

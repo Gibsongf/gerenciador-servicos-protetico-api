@@ -72,6 +72,18 @@ describe("/put/ Produto ", () => {
         expect(res.status).toEqual(200);
     });
 });
+
+describe("/delete/ Produto", () => {
+    test("Cant delete Produto if has associated Serviço in the db", async () => {
+        const res = await request(app)
+            .delete("/api/produto/" + data.produto._id)
+            .set("Accept", "application/json");
+        expect(res.headers["content-type"]).toEqual(
+            "application/json; charset=utf-8"
+        );
+        expect(res.status).toEqual(409);
+    });
+});
 afterAll(async () => {
     // Closing the DB connection allows Jest to exit successfully.
     await mongoose.connection.close();

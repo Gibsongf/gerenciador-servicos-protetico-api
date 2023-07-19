@@ -105,5 +105,9 @@ exports.editar = [
 // Delete
 // Deletar um serviço
 exports.deletar = asyncHandler(async (req, res) => {
-    res.send("Not implemented 'deletar serviço'");
+    const serviço = await Serviço.findByIdAndRemove(req.params.id).exec();
+    res.status(200).json({
+        status: "success",
+        message: "Serviço deletado",
+    });
 });
