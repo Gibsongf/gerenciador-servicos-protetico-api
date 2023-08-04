@@ -101,8 +101,9 @@ exports.editar = [
 exports.deletar = asyncHandler(async (req, res) => {
     const [produto, produtoInServices] = await Promise.all([
         Produto.findById(req.params.id).exec(),
-        Serviço.find({ produto: req.params.id }),
+        Serviço.find({ produto: [req.params.id] }).exec(),
     ]);
+
     if (produtoInServices.length > 0) {
         return res.status(409).json({
             status: "error",
@@ -110,7 +111,7 @@ exports.deletar = asyncHandler(async (req, res) => {
                 "Produto cannot be deleted because there are associated with Serviço",
         });
     } else {
-        await Paciente.findByIdAndRemove(req.params.id).exec();
+        await Produto.findByIdAndRemove(req.params.id).exec();
         res.status(200).json({
             status: "success",
             message: "Produto deletado.",

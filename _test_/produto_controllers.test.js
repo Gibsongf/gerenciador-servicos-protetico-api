@@ -11,6 +11,7 @@ let data;
 beforeAll(async () => {
     await initServer();
     data = await populateTest();
+    console.log(data);
 });
 describe("/get/ Produto", () => {
     test("all Produtos", async () => {
@@ -77,7 +78,7 @@ describe("/delete/ Produto", () => {
     test("Cant delete Produto if has associated Serviço in the db", async () => {
         const res = await request(app)
             .delete("/api/produto/" + data.produto._id)
-            .set("Accept", "application/json");
+            .set("Content-Type", "application/json");
         expect(res.headers["content-type"]).toEqual(
             "application/json; charset=utf-8"
         );

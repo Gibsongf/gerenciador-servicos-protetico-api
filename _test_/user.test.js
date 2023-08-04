@@ -5,7 +5,11 @@ const mongoose = require("mongoose");
 const initServer = require("../utils/mongoConfigTest");
 
 let data;
-
+const login = {
+    nome: "test",
+    username: "fake-user",
+    password: "123456",
+};
 beforeAll(async () => {
     await initServer();
     data = await populateTest(true);
@@ -15,11 +19,7 @@ describe("/post/ User", () => {
         const res = await request(app)
             .post("/user/register")
             .type("form")
-            .send({
-                nome: "test",
-                username: "fake-user",
-                password: "123456",
-            })
+            .send(login)
             .set("Accept", "application/json");
         expect(res.headers["content-type"]).toEqual(
             "application/json; charset=utf-8"
@@ -32,14 +32,14 @@ describe("/post/ User", () => {
             .post("/user/login")
             .type("form")
             .send({
-                username: data.username,
-                password: data.password,
+                username: login.username,
+                password: login.password,
             })
             .set("Accept", "application/json");
         expect(res.headers["content-type"]).toEqual(
             "application/json; charset=utf-8"
         );
-        expect(res.body.user.username).toEqual("user123");
+        expect(res.body.user.username).toEqual(login.username);
         expect(res.status).toEqual(200);
     });
 });
