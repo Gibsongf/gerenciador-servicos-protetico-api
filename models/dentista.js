@@ -4,7 +4,7 @@ const Schema = mongoose.Schema;
 const DentistaSchema = new Schema({
     nome: { type: String, require: true, minLength: 3 },
     sobrenome: { type: String },
-    local: { type: Schema.Types.ObjectId, require: true },
+    local: { type: Schema.Types.ObjectId, ref: "Local", require: true },
     telefone: { type: String, maxLength: 10, minLength: 8 },
     cpf: {
         type: Number,

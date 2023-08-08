@@ -11,12 +11,15 @@ exports.test = asyncHandler(async (req, res) => {
 });
 
 exports.todos = asyncHandler(async (req, res) => {
-    const all = await Dentista.find().exec(); //.sort({ nome: 1 })
+    const all = await Dentista.find()
+        .sort({ nome: 1 })
+        .populate("local")
+        .exec(); //.sort({ nome: 1 })
     if (!all) {
         res.sendStatus(404);
     }
     res.status(200).json({
-        todos_dentistas: all,
+        all,
     });
 });
 

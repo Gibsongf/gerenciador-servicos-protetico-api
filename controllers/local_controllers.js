@@ -19,7 +19,7 @@ exports.todos = asyncHandler(async (req, res) => {
         res.sendStatus(404);
     }
     res.status(200).json({
-        todos_locais: all,
+        all,
     });
     // res.json({ message: "Not implemented 'todos locais'" });
 });

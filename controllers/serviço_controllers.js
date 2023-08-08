@@ -18,7 +18,7 @@ exports.todos = asyncHandler(async (req, res) => {
         res.sendStatus(404);
     }
     res.status(200).json({
-        todos_serviços: all,
+        all,
     });
 });
 // Detalhes de um serviço
