@@ -4,26 +4,33 @@ const passport = require("passport");
 const path = require("path");
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
+const cors = require("cors");
+const session = require("express-session");
 
-const userRouter = require("./routes");
+const userRouter = require("./routes/user");
 const apiRouter = require("./routes/api");
 const app = express();
 require("./mongoConfig");
-// require("./passport");
+require("./passport");
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 
+app.use(cors());
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
+app.use(cors());
+app.use(session({ secret: "cats", resave: false, saveUninitialized: true }));
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use("/users", userRouter);
-app.use("/api", passport.authenticate("local"), apiRouter);
-
+app.use("/api", passport.authenticate("jwt", { session: false }), apiRouter);
+// put jwt token in this way more easy
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
     next(createError(404));

@@ -11,7 +11,6 @@ let data;
 beforeAll(async () => {
     await initServer();
     data = await populateTest();
-    console.log(data);
 });
 describe("/get/ Produto", () => {
     test("all Produtos", async () => {
