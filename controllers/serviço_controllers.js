@@ -13,7 +13,12 @@ exports.test = asyncHandler(async (req, res) => {
 // Read
 // Todos os serviços
 exports.todos = asyncHandler(async (req, res) => {
-    const all = await Serviço.find().sort({ nome: 1 }).exec();
+    const all = await Serviço.find()
+        .sort({ nome: 1 })
+        .populate("dentista")
+        .populate("paciente")
+        .populate("produto")
+        .exec();
     if (!all) {
         res.sendStatus(404);
     }
