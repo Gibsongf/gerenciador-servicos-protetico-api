@@ -59,8 +59,12 @@ exports.novo = [
         });
 
         if (!err.isEmpty()) {
-            console.log(err.errors);
-            res.json({ errors: err.errors });
+            // console.log(err.errors);
+            const errors = {};
+            err.errors.forEach((e) => {
+                errors[e.path] = e.msg;
+            });
+            res.status(400).json({ errors });
         } else {
             // console.log("saved");
             await produto.save();
@@ -89,7 +93,11 @@ exports.editar = [
             new: true,
         }).exec();
         if (!err.isEmpty()) {
-            res.json({ errors: err.errors });
+            const errors = {};
+            err.errors.forEach((e) => {
+                errors[e.path] = e.msg;
+            });
+            res.status(400).json({ errors });
         } else {
             await produto.save();
             res.status(200).json({ message: "Local updated", produto });

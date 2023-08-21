@@ -74,8 +74,12 @@ exports.novo = [
             produto: req.body.produto,
         });
         if (!err.isEmpty()) {
-            console.log(err.errors);
-            res.json({ errors: err.errors });
+            // console.log(err.errors);
+            const errors = {};
+            err.errors.forEach((e) => {
+                errors[e.path] = e.msg;
+            });
+            res.status(400).json({ errors });
         } else {
             // console.log("saved");
             await paciente.save();
@@ -119,8 +123,12 @@ exports.editar = [
             }
         ).exec();
         if (!err.isEmpty()) {
-            console.log(err.errors);
-            res.json({ errors: err.errors });
+            // console.log(err.errors);
+            const errors = {};
+            err.errors.forEach((e) => {
+                errors[e.path] = e.msg;
+            });
+            res.status(400).json({ errors });
         } else {
             await paciente.save();
             res.status(200).json({ message: "Paciente updated", paciente });

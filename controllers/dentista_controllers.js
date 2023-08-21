@@ -38,48 +38,47 @@ exports.detalhes = asyncHandler(async (req, res) => {
 });
 // isPostalCode(locale: 'BR'): ValidationChain CEP ?
 exports.novo = [
-    body("nome")
-        .trim()
-        .isLength({ min: 3 })
-        .withMessage("O Nome tem que ser especificado"),
+    body("nome").trim().notEmpty().withMessage("O Nome não especificado"),
     body("sobrenome").trim(),
     body("local") //isMongoId()
         .trim()
         .notEmpty()
-        .withMessage("O Local tem que ser especificado"),
+        .withMessage("O Local não especificado"),
     body("telefone")
         .trim()
         .escape()
-        .isString()
+        .isNumeric()
         .withMessage("São aceito apenas números")
         //DDD SEMPRE 011
-        .isLength({ max: 10, min: 8 })
-        .withMessage("O Número fornecido deve ter 8 ou 9 dígitos."),
+        .isLength({ max: 9, min: 8 })
+        .withMessage("O Número deve ter 8 ou 9 dígitos."),
     body("cpf")
         .trim()
         .escape()
         .isNumeric()
         .isLength({ max: 11, min: 11 })
-        .withMessage("O CPF fornecido deve ter 11 dígitos."),
+        .withMessage("O CPF deve ter 11 dígitos."),
     asyncHandler(async (req, res) => {
         const err = validationResult(req);
-
-        const local = await Local.findById(req.body.local).exec();
-        const dentista = new Dentista({
-            nome: req.body.nome, //require true
-            sobrenome: req.body.sobrenome,
-            tipo_de_tabela: { type: String, default: "Normal" },
-            local: local._id, //require true
-            celular: req.body.celular,
-            cpf: req.body.cpf, //require true
-        });
-
+        console.log(err);
         if (!err.isEmpty()) {
-            console.log(err.errors);
-            res.json({ errors: err.errors });
+            const errors = {};
+            err.errors.forEach((e) => {
+                errors[e.path] = e.msg;
+            });
+            res.status(400).json({ errors });
         } else {
-            // console.log("saved");
-            await dentista.save();
+            const local = await Local.findById(req.body.local).exec();
+            const dentista = new Dentista({
+                nome: req.body.nome, //require true
+                sobrenome: req.body.sobrenome,
+                local: local._id, //require true
+                telefone: Number(req.body.telefone),
+                cpf: Number(req.body.cpf), //require true
+            });
+
+            // await dentista.save();
+            console.log("saved");
             res.status(200).json({ message: "Dentista saved", dentista });
         }
     }),
@@ -89,12 +88,9 @@ exports.editar = [
     body("nome")
         .trim()
         .isLength({ min: 3 })
-        .withMessage("O Nome tem que ser especificado"),
+        .withMessage("O Nome não especificado"),
     body("sobrenome").trim(),
-    body("local")
-        .trim()
-        .notEmpty()
-        .withMessage("O Local tem que ser especificado"),
+    body("local").trim().notEmpty().withMessage("O Local não especificado"),
     body("telefone")
         .trim()
         .escape()
@@ -102,13 +98,13 @@ exports.editar = [
         .withMessage("São aceito apenas números")
         //DDD SEMPRE 011
         .isLength({ max: 10, min: 8 })
-        .withMessage("O Número fornecido deve ter 8 ou 9 dígitos."),
+        .withMessage("O Número deve ter 8 ou 9 dígitos."),
     body("cpf")
         .trim()
         .escape()
         .isNumeric()
         .isLength({ max: 11, min: 11 })
-        .withMessage("O CPF fornecido deve ter 11 dígitos."),
+        .withMessage("O CPF deve ter 11 dígitos."),
     asyncHandler(async (req, res) => {
         const err = validationResult(req);
         const update = Utility.emptyFields(req.body);
@@ -122,7 +118,11 @@ exports.editar = [
         ).exec();
 
         if (!err.isEmpty()) {
-            res.json({ errors: err.errors });
+            const errors = {};
+            err.errors.forEach((e) => {
+                errors[e.path] = e.msg;
+            });
+            res.status(400).json({ errors });
         } else {
             await dentista.save();
             res.status(200).json({ message: "Dentista updated", dentista });

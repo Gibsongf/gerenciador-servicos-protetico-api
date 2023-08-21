@@ -46,16 +46,16 @@ exports.novo = [
     body("telefone")
         .trim()
         .escape()
-        .isString()
+        .isNumeric()
         .withMessage("São aceito apenas números")
         //DDD SEMPRE 011
-        .isLength({ max: 10, min: 8 })
-        .withMessage("O Número fornecido deve ter 8 ou 9 dígitos."),
+        .isLength({ max: 9, min: 8 })
+        .withMessage("O Número deve ter 8 ou 9 dígitos."),
     body("cep")
         .notEmpty()
         .withMessage("Cep tem que ser especificado")
         .isPostalCode("BR")
-        .withMessage("Invalid Cep."),
+        .withMessage("Cep Invalido."),
     asyncHandler(async (req, res) => {
         const err = validationResult(req);
 
@@ -68,11 +68,14 @@ exports.novo = [
         });
 
         if (!err.isEmpty()) {
-            console.log(err.errors);
-            res.json({ errors: err.errors });
+            const errors = {};
+            err.errors.forEach((e) => {
+                errors[e.path] = e.msg;
+            });
+            res.status(400).json({ errors });
         } else {
             // console.log("saved");
-            await local.save();
+            // await local.save();
             res.status(200).json({
                 message: "Local saved",
                 local,
@@ -95,7 +98,7 @@ exports.editar = [
         .withMessage("São aceito apenas números")
         //DDD SEMPRE 011
         .isLength({ max: 10, min: 8 })
-        .withMessage("O Número fornecido deve ter 8 ou 9 dígitos."),
+        .withMessage("O Número deve ter 8 ou 9 dígitos."),
     body("cep")
         .notEmpty()
         .withMessage("Cep tem que ser especificado")
@@ -110,7 +113,11 @@ exports.editar = [
         }).exec();
 
         if (!err.isEmpty()) {
-            res.json({ errors: err.errors });
+            const errors = {};
+            err.errors.forEach((e) => {
+                errors[e.path] = e.msg;
+            });
+            res.status(400).json({ errors });
         } else {
             await local.save();
             res.status(200).json({ message: "Local updated", local });
