@@ -14,11 +14,10 @@ exports.test = asyncHandler(async (req, res) => {
 // Todos os serviços
 exports.todos = asyncHandler(async (req, res) => {
     const all = await Serviço.find()
-        .sort({ nome: 1 })
         .populate("dentista")
-        .populate("paciente")
         .populate("produto")
         .exec();
+
     if (!all) {
         res.sendStatus(404);
     }
@@ -30,7 +29,6 @@ exports.todos = asyncHandler(async (req, res) => {
 exports.detalhes = asyncHandler(async (req, res) => {
     const serviço = await Serviço.findById(req.params.id)
         .populate("dentista")
-        .populate("paciente")
         .populate("produto")
         .exec();
     if (!serviço) {
@@ -38,10 +36,13 @@ exports.detalhes = asyncHandler(async (req, res) => {
             message: "Serviço não foi encontrado",
         });
     }
-
+    // console.log(serviço);
     res.status(200).json({
-        serviço,
-        paciente: serviço.paciente,
+        serviço: {
+            _id: serviço._id,
+            statusEntrega: serviço.statusEntrega,
+            paciente: serviço.paciente,
+        },
         dentista: serviço.dentista,
         produto: serviço.produto,
     });
@@ -53,19 +54,15 @@ exports.novo = [
         .notEmpty()
         .withMessage("Dentista não especificado")
         .isMongoId()
-        .withMessage("Dentista Id invalido"),
-    body("paciente")
-        .notEmpty()
-        .withMessage("Paciente não especificado")
-        .isMongoId()
-        .withMessage("Paciente Id invalido"),
+        .withMessage("Dentista não encontrado"),
+    body("paciente_nome").notEmpty().withMessage("Paciente não especificado"),
     asyncHandler(async (req, res) => {
         const err = validationResult(req);
-        // console.log(err.errors);
+        console.log(req.body);
         const serviço = new Serviço({
             dentista: req.body.dentista,
             produto: req.body.produto,
-            paciente: req.body.paciente,
+            paciente: req.body.paciente_nome,
         });
         if (!err.isEmpty()) {
             // console.log(err.errors);
@@ -88,12 +85,8 @@ exports.editar = [
         .notEmpty()
         .withMessage("Dentista não especificado")
         .isMongoId()
-        .withMessage("Dentista Id invalido"),
-    body("paciente")
-        .notEmpty()
-        .withMessage("Paciente não especificado")
-        .isMongoId()
-        .withMessage("Paciente Id invalido"),
+        .withMessage("Dentista não encontrado"),
+    body("paciente_nome").notEmpty().withMessage("Paciente não especificado"),
     asyncHandler(async (req, res) => {
         const err = validationResult(req);
         // console.log(err.errors);
@@ -110,7 +103,7 @@ exports.editar = [
             });
             res.status(400).json({ errors });
         } else {
-            await serviço.save();
+            // await serviço.save();
             res.status(200).json({ message: "Serviço Updated", serviço });
         }
     }),
