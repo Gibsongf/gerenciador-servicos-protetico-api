@@ -1,10 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
-// const Dentista = require("../models/dentista");
-// const Local = require("../models/local");
 const Serviço = require("../models/serviço");
 const Utility = require("../utils/utility");
-// const Paciente = require("../models/paciente");
 const Produto = require("../models/produto");
 
 // Route Test

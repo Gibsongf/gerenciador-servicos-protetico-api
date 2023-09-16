@@ -9,15 +9,15 @@ const router = express.Router();
 // GET for Test
 router.get("/test-dentistas", dentista_controllers.test);
 router.get("/test-locais", local_controllers.test);
-router.get("/test-pacientes", paciente_controllers.test);
+// router.get("/test-pacientes", paciente_controllers.test);
 router.get("/test-serviços", serviço_controllers.test);
 router.get("/test-produtos", produto_controllers.test);
 
 // Main API route
 router.use("/servico", require("./serviço"));
-router.use("/paciente", require("./paciente"));
+// router.use("/paciente", require("./paciente"));
 router.use("/produto", require("./produto"));
 router.use("/local", require("./local"));
 router.use("/dentista", require("./dentista"));
-
+router.use("/export", require("./exportExcel"));
 module.exports = router;

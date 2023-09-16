@@ -3,7 +3,7 @@ const Dentista = require("../models/dentista");
 const Serviço = require("../models/serviço");
 const Local = require("../models/local");
 const Produto = require("../models/produto");
-const Paciente = require("../models/paciente");
+// const Paciente = require("../models/paciente");
 const mongoose = require("mongoose");
 require("dotenv").config();
 
@@ -26,24 +26,26 @@ async function main() {
         await createDentista(local._id);
         await createProduto();
     }
-    await createPaciente();
-    await createServiço();
+    for (let i = 0; i < 5; i++) {
+        await createServiço();
+    }
+
     mongoose.connection.close();
 }
 
-// const mongoDB = process.env.MONGODB;
-// main().catch((err) => console.log(err));
+const mongoDB = process.env.MONGODB;
+main().catch((err) => console.log(err));
 async function populateTest() {
     const local = await createLocal();
     const dentista = await createDentista(local._id);
     const produto = await createProduto();
-    const paciente = await createPaciente();
     const serviço = await createServiço();
-    return { local, dentista, produto, paciente, serviço };
+    return { local, dentista, produto, serviço };
 }
 const createDentista = async (local_id) => {
     const dentista = new Dentista({
         nome: faker.person.firstName(),
+        sobrenome: faker.person.lastName(),
         local: local_id,
         telefone: String(faker.phone.number("####-####")),
         cpf: String(faker.phone.number("###########")),
@@ -61,7 +63,7 @@ const createLocal = async () => {
     const local = new Local({
         nome: faker.company.name(),
         endereço: faker.location.streetAddress(),
-        tipo_de_tabela: type,
+        tipo_tabela: type,
         cep: faker.location.zipCode(),
         telefone: String(faker.phone.number("####-####")),
     });
@@ -81,27 +83,14 @@ const createProduto = async () => {
 
     return produto;
 };
-const createPaciente = async () => {
-    const dentista = dentistaArray[0];
-    const produto = produtoArray[0];
-
-    const paciente = new Paciente({
-        nome: faker.person.firstName(),
-        dentista: dentista._id,
-        produto: [produto._id],
-    });
-    pacienteArray.push(paciente);
-    await paciente.save();
-    //console.log("Created Paciente!");
-    return paciente;
-};
 const createServiço = async () => {
-    const paciente = pacienteArray[0];
+    const dentista = dentistaArray[randomNumber(dentistaArray)];
+    const produto = produtoArray[randomNumber(produtoArray)];
 
     const serviço = new Serviço({
-        dentista: paciente.dentista._id,
-        paciente: paciente._id,
-        produto: [paciente.produto],
+        dentista: dentista._id,
+        paciente: faker.person.fullName(),
+        produto: [produto._id],
         statusEntrega: false,
     });
     await serviço.save();
@@ -109,4 +98,4 @@ const createServiço = async () => {
     return serviço;
 };
 
-module.exports = populateTest;
+// module.exports = populateTest;

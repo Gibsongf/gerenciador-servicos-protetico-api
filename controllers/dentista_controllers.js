@@ -4,7 +4,6 @@ const Dentista = require("../models/dentista");
 const Local = require("../models/local");
 const Serviço = require("../models/serviço");
 const Utility = require("../utils/utility");
-const { ObjectId } = require("mongodb");
 // Route Test
 exports.test = asyncHandler(async (req, res) => {
     res.json({ message: "Test Dentista" });
@@ -28,7 +27,7 @@ exports.detalhes = asyncHandler(async (req, res) => {
         .populate("local")
         .exec();
     const serviços = await Serviço.find({ dentista: dentista._id })
-        .populate("paciente")
+        .populate("dentista")
         .populate("produto")
         .exec();
     if (!dentista) {

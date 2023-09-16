@@ -4,7 +4,6 @@ const Dentista = require("../models/dentista");
 const Local = require("../models/local");
 const Serviço = require("../models/serviço");
 const Utility = require("../utils/utility");
-// const Paciente = require("../models/paciente");
 
 // Route Test
 exports.test = asyncHandler(async (req, res) => {

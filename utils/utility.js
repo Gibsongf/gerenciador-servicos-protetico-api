@@ -8,9 +8,11 @@ mongoose.set("strictQuery", false);
 exports.emptyFields = (obj, underline) => {
     const newObj = {};
     const keys = Object.keys(obj);
+    // console.log(keys);
     keys.forEach((k) => {
         if (obj[k].length > 0) {
             if (underline) {
+                // console.log(obj[k], k);
                 const newK = k.replace(" ", "_");
                 newObj[newK] = obj[k];
             } else {

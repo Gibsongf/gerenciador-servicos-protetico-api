@@ -1,10 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
-// const Dentista = require("../models/dentista");
-// const Local = require("../models/local");
 const Serviço = require("../models/serviço");
 const Utility = require("../utils/utility");
-// const Paciente = require("../models/paciente");
 
 // Route Test
 exports.test = asyncHandler(async (req, res) => {
@@ -38,13 +35,7 @@ exports.detalhes = asyncHandler(async (req, res) => {
     }
     // console.log(serviço);
     res.status(200).json({
-        serviço: {
-            _id: serviço._id,
-            statusEntrega: serviço.statusEntrega,
-            paciente: serviço.paciente,
-        },
-        dentista: serviço.dentista,
-        produto: serviço.produto,
+        serviço,
     });
 });
 // Create
@@ -55,14 +46,15 @@ exports.novo = [
         .withMessage("Dentista não especificado")
         .isMongoId()
         .withMessage("Dentista não encontrado"),
-    body("paciente_nome").notEmpty().withMessage("Paciente não especificado"),
+    body("paciente").notEmpty().withMessage("Paciente não especificado"),
+    body("local").notEmpty().withMessage("Local não especificado"),
     asyncHandler(async (req, res) => {
         const err = validationResult(req);
         console.log(req.body);
         const serviço = new Serviço({
             dentista: req.body.dentista,
             produto: req.body.produto,
-            paciente: req.body.paciente_nome,
+            paciente: req.body.paciente,
         });
         if (!err.isEmpty()) {
             // console.log(err.errors);
@@ -86,24 +78,23 @@ exports.editar = [
         .withMessage("Dentista não especificado")
         .isMongoId()
         .withMessage("Dentista não encontrado"),
-    body("paciente_nome").notEmpty().withMessage("Paciente não especificado"),
+    body("paciente").notEmpty().withMessage("Paciente não especificado"),
     asyncHandler(async (req, res) => {
+        console.log(req.body);
         const err = validationResult(req);
-        // console.log(err.errors);
         const update = Utility.emptyFields(req.body, true);
         //'local' to be able to update need to return a id value at forms
         const serviço = await Serviço.findByIdAndUpdate(req.params.id, update, {
             new: true,
         }).exec();
         if (!err.isEmpty()) {
-            // console.log(err.errors);
             const errors = {};
             err.errors.forEach((e) => {
                 errors[e.path] = e.msg;
             });
             res.status(400).json({ errors });
         } else {
-            // await serviço.save();
+            await serviço.save();
             res.status(200).json({ message: "Serviço Updated", serviço });
         }
     }),
