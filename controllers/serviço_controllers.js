@@ -2,6 +2,7 @@ const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
 const Serviço = require("../models/serviço");
 const Utility = require("../utils/utility");
+const Local = require("../models/local");
 
 // Route Test
 exports.test = asyncHandler(async (req, res) => {
@@ -50,7 +51,6 @@ exports.novo = [
     body("local").notEmpty().withMessage("Local não especificado"),
     asyncHandler(async (req, res) => {
         const err = validationResult(req);
-        console.log(req.body);
         const serviço = new Serviço({
             dentista: req.body.dentista,
             produto: req.body.produto,

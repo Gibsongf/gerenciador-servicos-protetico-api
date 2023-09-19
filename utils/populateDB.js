@@ -5,7 +5,7 @@ const Local = require("../models/local");
 const Produto = require("../models/produto");
 // const Paciente = require("../models/paciente");
 const mongoose = require("mongoose");
-require("dotenv").config();
+// require("dotenv").config();
 
 mongoose.set("strictQuery", false);
 
@@ -52,7 +52,6 @@ const createDentista = async (local_id) => {
     });
     await dentista.save();
     dentistaArray.push(dentista);
-    //console.log("Created Dentinsta!");
 
     return dentista;
 };
