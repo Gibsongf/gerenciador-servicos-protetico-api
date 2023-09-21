@@ -9,14 +9,12 @@ const { ObjectId } = require("mongodb");
 
 let data;
 let dentistaIdString;
-let pacienteIdString;
 let produtoIdString;
 beforeAll(async () => {
     await initServer();
     data = await populateTest();
     produtoIdString = new ObjectId(data.produto._id).toString();
     dentistaIdString = new ObjectId(data.dentista._id).toString();
-    pacienteIdString = new ObjectId(data.paciente._id).toString();
 });
 describe("/get/ Serviço", () => {
     test("all Serviços", async () => {
@@ -51,7 +49,6 @@ describe("/post/ Serviço ", () => {
             .send({
                 dentista: dentistaIdString,
                 produto: produtoIdString,
-                paciente: pacienteIdString,
             })
             .set("Accept", "application/json");
         // console.log(res);
@@ -70,7 +67,6 @@ describe("/put/ Serviço ", () => {
             .send({
                 dentista: dentistaIdString,
                 produto: produtoIdString,
-                paciente: pacienteIdString,
                 statusEntrega: true,
             })
             .set("Accept", "application/json");

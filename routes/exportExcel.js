@@ -32,7 +32,10 @@ router.get("/:id", async (req, res) => {
             worksheet.mergeCells(location);
             // use cell to apply style or something else
             const cell = worksheet.getCell(location);
-            cell.alignment = { horizontal: "center", vertical: "middle" };
+            cell.alignment = {
+                horizontal: "center",
+                vertical: "middle",
+            };
         });
 
         worksheet.columns = [
@@ -40,7 +43,8 @@ router.get("/:id", async (req, res) => {
                 header: [
                     "DG Laboratório",
                     "",
-
+                    "CROTPD 11054",
+                    "",
                     "Tec. Resp.: Diana Gomes Silva",
                     "",
                     "Tel: (11) 96970-5611 (whatsapp)",
@@ -53,12 +57,12 @@ router.get("/:id", async (req, res) => {
                 key: "col1",
                 width: 15,
             },
-            { key: "col2", width: 15 },
+            { key: "col2", width: 30 },
             { key: "col3", width: 15 },
         ];
-
         const data = [
             { col1: "Cliente", col2: "Produto", col3: "Valor" },
+
             // Add your data from the database here
         ];
 
@@ -73,15 +77,13 @@ router.get("/:id", async (req, res) => {
                 data.push({ col2: p.nome, col3: valorType(p) });
             }
         });
+
         worksheet.addRows(data);
+
         // Set response headers to indicate a downloadable Excel file
         res.setHeader(
             "Content-Type",
             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        );
-        res.setHeader(
-            "Content-Disposition",
-            "attachment; filename=exported_data.xlsx"
         );
 
         // Send the Excel file as a buffer to the client

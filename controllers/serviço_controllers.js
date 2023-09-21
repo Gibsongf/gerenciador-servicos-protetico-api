@@ -65,11 +65,26 @@ exports.novo = [
             res.status(400).json({ errors });
         } else {
             // console.log("saved");
-            await serviço.save();
+            // await serviço.save();
             res.status(200).json({ message: "Serviço Saved", serviço });
         }
     }),
 ];
+exports.detailsByMonth = asyncHandler(async (req, res) => {
+    const serviço = await Serviço.findById({ _id: req.params.id })
+        .populate("dentista")
+        .populate("produto")
+        .exec();
+    // if (!serviço) {
+    //     res.status(404).json({
+    //         message: "Serviço não foi encontrado",
+    //     });
+    // }
+    // console.log(serviço);
+    // res.status(200).json({
+    //     serviço,
+    // });
+});
 // Update
 // Modificar um serviço
 exports.editar = [

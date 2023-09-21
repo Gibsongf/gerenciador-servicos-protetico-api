@@ -25,6 +25,7 @@ const ServiçoSchema = new Schema({
     dentista: { type: Schema.Types.ObjectId, ref: "Dentista", require: true },
     paciente: { type: String, require: true, minLength: 3 },
     produto: [{ type: Schema.Types.ObjectId, ref: "Produto" }],
+    data_registro: { type: Date, default: Date.now },
     statusEntrega: { type: Boolean, require: true, default: false },
 });
 

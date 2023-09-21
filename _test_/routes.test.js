@@ -13,11 +13,7 @@ describe("api routes", () => {
             url: "test-dentistas",
             msg: { message: "Test Dentista" },
         },
-        {
-            name: "Paciente route",
-            url: "test-pacientes",
-            msg: { message: "Test Paciente" },
-        },
+
         {
             name: "Serviço route",
             url: "test-serviços",

@@ -33,3 +33,12 @@ exports.emptyFields = (obj, underline) => {
     });
     return newObj;
 };
+exports.formatDate = (timestamp) => {
+    const date = new Date(timestamp);
+    const options = {
+        year: "numeric",
+        month: "long",
+    };
+    const format_date = date.toLocaleString("pt-BR", options);
+    return format_date;
+};

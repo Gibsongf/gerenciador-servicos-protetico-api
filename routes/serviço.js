@@ -5,6 +5,8 @@ const router = express.Router();
 /*Serviço Route */
 // GET
 router.get("/todos", serviço_controllers.todos);
+router.get("/todos/:mes/:id", serviço_controllers.detalhes);
+
 router.get("/:id", serviço_controllers.detalhes);
 
 // POST

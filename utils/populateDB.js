@@ -3,15 +3,13 @@ const Dentista = require("../models/dentista");
 const Serviço = require("../models/serviço");
 const Local = require("../models/local");
 const Produto = require("../models/produto");
-// const Paciente = require("../models/paciente");
 const mongoose = require("mongoose");
-// require("dotenv").config();
+require("dotenv").config();
 
 mongoose.set("strictQuery", false);
 
 const produtoArray = [];
 const dentistaArray = [];
-const pacienteArray = [];
 const randomNumber = (array) => {
     if (array.length === 1) {
         return 0;
@@ -19,8 +17,17 @@ const randomNumber = (array) => {
     const indx = Math.floor(Math.random() * array.length);
     return indx;
 };
+
 async function main() {
     await mongoose.connect(mongoDB);
+    const collections = mongoose.connection.collections;
+
+    await Promise.all(
+        Object.values(collections).map(async (collection) => {
+            await collection.deleteMany({}); // an empty mongodb selector object ({}) must be passed as the filter argument
+        })
+    );
+
     for (let i = 0; i < 5; i++) {
         const local = await createLocal();
         await createDentista(local._id);
