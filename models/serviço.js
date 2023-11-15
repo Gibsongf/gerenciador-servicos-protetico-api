@@ -23,6 +23,7 @@ const getMonthName = () => {
 // we can make a func that will return the total value of all product here or as a middleware
 const ServiçoSchema = new Schema({
     dentista: { type: Schema.Types.ObjectId, ref: "Dentista", require: true },
+    local: { type: Schema.Types.ObjectId, ref: "Local", require: true },
     paciente: { type: String, require: true, minLength: 3 },
     produto: [{ type: Schema.Types.ObjectId, ref: "Produto" }],
     data_registro: { type: Date, default: Date.now },

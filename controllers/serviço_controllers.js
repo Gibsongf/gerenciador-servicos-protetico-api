@@ -49,12 +49,17 @@ exports.novo = [
         .withMessage("Dentista não encontrado"),
     body("paciente").notEmpty().withMessage("Paciente não especificado"),
     body("local").notEmpty().withMessage("Local não especificado"),
+    body("produto").exists().withMessage("Produto não especificado"),
     asyncHandler(async (req, res) => {
+        // console.log(req.body);
         const err = validationResult(req);
+        const statusEntrega = req.body["status-entrega"] ? true : false;
         const serviço = new Serviço({
             dentista: req.body.dentista,
             produto: req.body.produto,
             paciente: req.body.paciente,
+            local: req.body.local,
+            statusEntrega: statusEntrega,
         });
         if (!err.isEmpty()) {
             // console.log(err.errors);
@@ -65,35 +70,36 @@ exports.novo = [
             res.status(400).json({ errors });
         } else {
             // console.log("saved");
-            // await serviço.save();
+            await serviço.save();
             res.status(200).json({ message: "Serviço Saved", serviço });
         }
     }),
 ];
-exports.detailsByMonth = asyncHandler(async (req, res) => {
-    const serviço = await Serviço.findById({ _id: req.params.id })
+exports.detailsByLocal = asyncHandler(async (req, res) => {
+    const serviço = await Serviço.find({ local: req.params.local })
         .populate("dentista")
         .populate("produto")
         .exec();
-    // if (!serviço) {
-    //     res.status(404).json({
-    //         message: "Serviço não foi encontrado",
-    //     });
-    // }
-    // console.log(serviço);
-    // res.status(200).json({
-    //     serviço,
-    // });
+    if (!serviço) {
+        res.status(404).json({
+            message: "Serviço não foi encontrado",
+        });
+    }
+    res.status(200).json({
+        serviço,
+    });
 });
 // Update
 // Modificar um serviço
 exports.editar = [
+    body("local").notEmpty().withMessage("Local não especificado"),
     body("dentista")
         .notEmpty()
         .withMessage("Dentista não especificado")
         .isMongoId()
         .withMessage("Dentista não encontrado"),
     body("paciente").notEmpty().withMessage("Paciente não especificado"),
+    body("produto").exists().withMessage("Produto não especificado"),
     asyncHandler(async (req, res) => {
         console.log(req.body);
         const err = validationResult(req);

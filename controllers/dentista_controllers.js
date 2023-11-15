@@ -46,8 +46,6 @@ exports.novo = [
     body("telefone")
         .trim()
         .escape()
-        .isNumeric()
-        .withMessage("São aceito apenas números")
         //DDD SEMPRE 011
         .isLength({ max: 9, min: 8 })
         .withMessage("O Número deve ter 8 ou 9 dígitos."),
@@ -59,7 +57,7 @@ exports.novo = [
         .withMessage("O CPF deve ter 11 dígitos."),
     asyncHandler(async (req, res) => {
         const err = validationResult(req);
-        console.log(err);
+        // console.log(err);
         if (!err.isEmpty()) {
             const errors = {};
             err.errors.forEach((e) => {
@@ -72,7 +70,7 @@ exports.novo = [
                 nome: req.body.nome, //require true
                 sobrenome: req.body.sobrenome,
                 local: local._id, //require true
-                telefone: Number(req.body.telefone),
+                telefone: req.body.telefone,
                 cpf: Number(req.body.cpf), //require true
             });
 
@@ -106,7 +104,7 @@ exports.editar = [
         .withMessage("O CPF deve ter 11 dígitos."),
     asyncHandler(async (req, res) => {
         const err = validationResult(req);
-        console.log(err);
+
         const update = Utility.emptyFields(req.body);
         //'local' to be able to update need to return a id value at forms
         const dentista = await Dentista.findByIdAndUpdate(

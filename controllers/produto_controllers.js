@@ -62,7 +62,7 @@ exports.novo = [
             res.status(400).json({ errors });
         } else {
             // console.log("saved");
-            // await produto.save();
+            await produto.save();
             res.status(200).json({ message: "Produto saved", produto });
         }
     }),
@@ -75,11 +75,12 @@ exports.editar = [
         .notEmpty()
         .isLength({ min: 3 })
         .withMessage("O Nome tem que ser especificado"),
-    body("valor normal")
+    body("valor_normal")
         .notEmpty()
         .withMessage("Valor normal nao especificado")
         .isNumeric()
         .withMessage("São aceitos apenas números"),
+
     asyncHandler(async (req, res) => {
         const err = validationResult(req);
         const update = Utility.emptyFields(req.body, true);

@@ -33,7 +33,7 @@ async function main() {
         await createDentista(local._id);
         await createProduto();
     }
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 10; i++) {
         await createServiço();
     }
 
@@ -92,11 +92,13 @@ const createProduto = async () => {
 const createServiço = async () => {
     const dentista = dentistaArray[randomNumber(dentistaArray)];
     const produto = produtoArray[randomNumber(produtoArray)];
+    const produto2 = produtoArray[randomNumber(produtoArray)];
 
     const serviço = new Serviço({
         dentista: dentista._id,
         paciente: faker.person.fullName(),
-        produto: [produto._id],
+        produto: [produto._id, produto2._id],
+        local: dentista.local._id,
         statusEntrega: false,
     });
     await serviço.save();
