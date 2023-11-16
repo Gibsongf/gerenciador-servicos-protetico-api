@@ -76,10 +76,22 @@ exports.novo = [
     }),
 ];
 exports.detailsByLocal = asyncHandler(async (req, res) => {
-    const serviço = await Serviço.find({ local: req.params.local })
+    const serviço = await Serviço.find({ local: req.params.id })
         .populate("dentista")
         .populate("produto")
         .exec();
+    if (!serviço) {
+        res.status(404).json({
+            message: "Serviço não foi encontrado",
+        });
+    }
+    res.status(200).json({
+        serviço,
+    });
+});
+exports.detailsByDentist = asyncHandler(async (req, res) => {
+    const serviço = await Serviço.find({ dentista: req.params.id }).exec();
+    console.log(serviço);
     if (!serviço) {
         res.status(404).json({
             message: "Serviço não foi encontrado",
@@ -99,10 +111,17 @@ exports.editar = [
         .isMongoId()
         .withMessage("Dentista não encontrado"),
     body("paciente").notEmpty().withMessage("Paciente não especificado"),
-    body("produto").exists().withMessage("Produto não especificado"),
+
     asyncHandler(async (req, res) => {
-        console.log(req.body);
         const err = validationResult(req);
+        console.log(req.body);
+        if (req.body.produto.length < 1) {
+            err.errors.push({
+                msg: "Nenhum produto selecionado",
+                path: "produto",
+            });
+        }
+        // console.log(err);
         const update = Utility.emptyFields(req.body, true);
         //'local' to be able to update need to return a id value at forms
         const serviço = await Serviço.findByIdAndUpdate(req.params.id, update, {
