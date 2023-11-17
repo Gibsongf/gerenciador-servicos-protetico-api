@@ -114,7 +114,7 @@ exports.editar = [
 
     asyncHandler(async (req, res) => {
         const err = validationResult(req);
-        console.log(req.body);
+        // console.log(req.body);
         if (req.body.produto.length < 1) {
             err.errors.push({
                 msg: "Nenhum produto selecionado",
