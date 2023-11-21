@@ -85,9 +85,7 @@ exports.editar = [
         const err = validationResult(req);
         const update = Utility.emptyFields(req.body, true);
         //'local' to be able to update need to return a id value at forms
-        const produto = await Produto.findByIdAndUpdate(req.params.id, update, {
-            new: true,
-        }).exec();
+
         if (!err.isEmpty()) {
             const errors = {};
             err.errors.forEach((e) => {
@@ -95,6 +93,13 @@ exports.editar = [
             });
             res.status(400).json({ errors });
         } else {
+            const produto = await Produto.findByIdAndUpdate(
+                req.params.id,
+                update,
+                {
+                    new: true,
+                }
+            ).exec();
             await produto.save();
             res.status(200).json({ message: "Local updated", produto });
         }

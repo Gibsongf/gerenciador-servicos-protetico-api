@@ -62,7 +62,7 @@ exports.novo = [
         const local = new Local({
             nome: req.body.nome,
             endereço: req.body.endereço,
-            tipo_tabela: req.body.tipo_tabela,
+            tabela: req.body.tabela,
             telefone: req.body.telefone,
             cep: req.body.cep,
         });
@@ -75,7 +75,7 @@ exports.novo = [
             res.status(400).json({ errors });
         } else {
             // console.log("saved");
-            // await local.save();
+            await local.save();
             res.status(200).json({
                 message: "Local saved",
                 local,
@@ -96,7 +96,6 @@ exports.editar = [
         .escape()
         .isString()
         .withMessage("São aceito apenas números")
-        //DDD SEMPRE 011
         .isLength({ max: 10, min: 8 })
         .withMessage("O Número deve ter 8 ou 9 dígitos."),
     body("cep")
@@ -105,12 +104,9 @@ exports.editar = [
         .isPostalCode("BR")
         .withMessage("Invalid Cep."),
     asyncHandler(async (req, res) => {
+        console.log(req.body);
         const err = validationResult(req);
         const update = Utility.emptyFields(req.body);
-        //'local' to be able to update need to return a id value at forms
-        const local = await Local.findByIdAndUpdate(req.params.id, update, {
-            new: true,
-        }).exec();
 
         if (!err.isEmpty()) {
             const errors = {};
@@ -119,6 +115,11 @@ exports.editar = [
             });
             res.status(400).json({ errors });
         } else {
+            //'local' to be able to update need to return a id value at forms
+            const local = await Local.findByIdAndUpdate(req.params.id, update, {
+                new: true,
+            }).exec();
+            // console.log(err);
             await local.save();
             res.status(200).json({ message: "Local updated", local });
         }

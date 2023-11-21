@@ -107,13 +107,6 @@ exports.editar = [
 
         const update = Utility.emptyFields(req.body);
         //'local' to be able to update need to return a id value at forms
-        const dentista = await Dentista.findByIdAndUpdate(
-            req.params.id,
-            update,
-            {
-                new: true,
-            }
-        ).exec();
 
         if (!err.isEmpty()) {
             const errors = {};
@@ -122,6 +115,13 @@ exports.editar = [
             });
             res.status(400).json({ errors });
         } else {
+            const dentista = await Dentista.findByIdAndUpdate(
+                req.params.id,
+                update,
+                {
+                    new: true,
+                }
+            ).exec();
             await dentista.save();
             res.status(200).json({ message: "Dentista updated", dentista });
         }

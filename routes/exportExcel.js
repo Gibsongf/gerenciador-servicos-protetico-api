@@ -16,10 +16,10 @@ router.get("/:id", async (req, res) => {
         // Create a new Excel workbook
         const workbook = new ExcelJS.Workbook();
         const valorType = (p) => {
-            if (local.tipo_tabela === "Reduzido") {
+            if (local.tabela === "Reduzido") {
                 return p.valor_reduzido;
             }
-            if (local.tipo_tabela === "Normal") {
+            if (local.tabela === "Normal") {
                 return p.valor_normal;
             }
         };

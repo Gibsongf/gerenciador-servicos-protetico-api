@@ -8,7 +8,7 @@ const LocalSchema = new Schema({
     // should do this at the local controllers
     // dentistas: [{ type: Schema.Types.ObjectId }],
     telefone: { type: String, maxLength: 9, minLength: 8 },
-    tipo_tabela: {
+    tabela: {
         type: String,
         enum: ["Normal", "Reduzido"],
         default: "Normal",

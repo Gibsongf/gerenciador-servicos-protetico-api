@@ -22,11 +22,11 @@ async function main() {
     await mongoose.connect(mongoDB);
     const collections = mongoose.connection.collections;
 
-    await Promise.all(
-        Object.values(collections).map(async (collection) => {
-            await collection.deleteMany({}); // an empty mongodb selector object ({}) must be passed as the filter argument
-        })
-    );
+    // await Promise.all(
+    //     Object.values(collections).map(async (collection) => {
+    //         await collection.deleteMany({}); // an empty mongodb selector object ({}) must be passed as the filter argument
+    //     })
+    // );
 
     for (let i = 0; i < 5; i++) {
         const local = await createLocal();
@@ -69,7 +69,7 @@ const createLocal = async () => {
     const local = new Local({
         nome: faker.company.name(),
         endereço: faker.location.streetAddress(),
-        tipo_tabela: type,
+        tabela: type,
         cep: faker.location.zipCode(),
         telefone: String(faker.phone.number("####-####")),
     });

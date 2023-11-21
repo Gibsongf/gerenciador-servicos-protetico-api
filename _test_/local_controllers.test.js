@@ -43,7 +43,7 @@ describe("/post/ Local ", () => {
                 endereço: "avenida Alves Dias",
                 telefone: "4002-8922",
                 cep: "11111-111",
-                tipo_tabela: "Reduzido",
+                tabela: "Reduzido",
             })
             .set("Accept", "application/json");
         expect(res.headers["content-type"]).toEqual(
@@ -63,7 +63,7 @@ describe("/put/ Local ", () => {
                 endereço: "Updated",
                 telefone: "4002-8922",
                 cep: "11111-111",
-                tipo_tabela: "Normal",
+                tabela: "Normal",
             })
             .set("Accept", "application/json");
         expect(res.headers["content-type"]).toEqual(
@@ -71,7 +71,7 @@ describe("/put/ Local ", () => {
         );
         expect(res.body.message).toEqual("Local updated");
         expect(res.body.local.endereço).toEqual("Updated");
-        expect(res.body.local.tipo_tabela).toEqual("Normal");
+        expect(res.body.local.tabela).toEqual("Normal");
         expect(res.status).toEqual(200);
     });
 });

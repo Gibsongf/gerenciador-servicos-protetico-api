@@ -123,10 +123,7 @@ exports.editar = [
         }
         // console.log(err);
         const update = Utility.emptyFields(req.body, true);
-        //'local' to be able to update need to return a id value at forms
-        const serviço = await Serviço.findByIdAndUpdate(req.params.id, update, {
-            new: true,
-        }).exec();
+
         if (!err.isEmpty()) {
             const errors = {};
             err.errors.forEach((e) => {
@@ -134,6 +131,13 @@ exports.editar = [
             });
             res.status(400).json({ errors });
         } else {
+            const serviço = await Serviço.findByIdAndUpdate(
+                req.params.id,
+                update,
+                {
+                    new: true,
+                }
+            ).exec();
             await serviço.save();
             res.status(200).json({ message: "Serviço Updated", serviço });
         }
