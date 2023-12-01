@@ -28,6 +28,7 @@ exports.detalhes = asyncHandler(async (req, res) => {
     const serviço = await Serviço.findById(req.params.id)
         .populate("dentista")
         .populate("produto")
+        .populate("local")
         .exec();
     if (!serviço) {
         res.status(404).json({
@@ -91,7 +92,7 @@ exports.detailsByLocal = asyncHandler(async (req, res) => {
 });
 exports.detailsByDentist = asyncHandler(async (req, res) => {
     const serviço = await Serviço.find({ dentista: req.params.id }).exec();
-    console.log(serviço);
+    // console.log(serviço);
     if (!serviço) {
         res.status(404).json({
             message: "Serviço não foi encontrado",

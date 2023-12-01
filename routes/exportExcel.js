@@ -9,10 +9,13 @@ router.get("/:id", async (req, res) => {
         const serviço = await Serviço.findById(req.params.id)
             .populate("dentista")
             .populate("produto")
+            .populate("local")
             .exec();
-        const local = await Local.findById(serviço.dentista.local).exec();
-        const { produto, dentista } = serviço;
+        const { produto, dentista, local } = serviço;
 
+        // const date = data.serviço.dataRegistro.split("T")[0];
+        // const fileName = `${utils.fullName(dentista)}-${date}`;
+        // console.log(fileName);
         // Create a new Excel workbook
         const workbook = new ExcelJS.Workbook();
         const valorType = (p) => {
@@ -53,6 +56,7 @@ router.get("/:id", async (req, res) => {
                     "Informações do Pedido",
                     "",
                     `${local.nome}, Dr.${utils.fullName(dentista)}`,
+                    " ",
                 ],
                 key: "col1",
                 width: 15,
@@ -62,7 +66,7 @@ router.get("/:id", async (req, res) => {
         ];
         const data = [
             { col1: "Cliente", col2: "Produto", col3: "Valor" },
-
+            { col1: "", col2: "", col3: "" },
             // Add your data from the database here
         ];
 

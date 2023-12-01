@@ -74,7 +74,7 @@ exports.novo = [
                 cpf: Number(req.body.cpf), //require true
             });
 
-            // await dentista.save();
+            await dentista.save();
             console.log("saved");
             res.status(200).json({ message: "Dentista saved", dentista });
         }
@@ -106,7 +106,6 @@ exports.editar = [
         const err = validationResult(req);
 
         const update = Utility.emptyFields(req.body);
-        //'local' to be able to update need to return a id value at forms
 
         if (!err.isEmpty()) {
             const errors = {};
