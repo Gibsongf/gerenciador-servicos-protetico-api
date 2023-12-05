@@ -70,7 +70,7 @@ exports.novo = [
             });
             res.status(400).json({ errors });
         } else {
-            // console.log("saved");
+            console.log(serviço);
             await serviço.save();
             res.status(200).json({ message: "Serviço Saved", serviço });
         }
