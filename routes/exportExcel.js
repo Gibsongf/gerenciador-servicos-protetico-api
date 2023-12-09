@@ -1,7 +1,6 @@
 const express = require("express");
 const ExcelJS = require("exceljs");
 const Serviço = require("../models/serviço");
-const Local = require("../models/local");
 const Dentista = require("../models/dentista");
 const router = express.Router();
 const utils = require("../utils/utility");
