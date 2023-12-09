@@ -18,7 +18,7 @@ describe("/get/ local", () => {
         expect(res.headers["content-type"]).toEqual(
             "application/json; charset=utf-8"
         );
-        expect(res.body["todos_locais"].length).toBe(1);
+        expect(res.body["all"].length).toBe(1);
         expect(res.status).toEqual(200);
     });
     test("one local details", async () => {
@@ -41,7 +41,7 @@ describe("/post/ Local ", () => {
             .send({
                 nome: "Fake LOCAL",
                 endereço: "avenida Alves Dias",
-                telefone: "4002-8922",
+                telefone: "40028922",
                 cep: "11111-111",
                 tabela: "Reduzido",
             })
@@ -49,6 +49,7 @@ describe("/post/ Local ", () => {
         expect(res.headers["content-type"]).toEqual(
             "application/json; charset=utf-8"
         );
+
         expect(res.body.message).toEqual("Local saved");
         expect(res.status).toEqual(200);
     });
@@ -61,7 +62,7 @@ describe("/put/ Local ", () => {
             .send({
                 nome: "Fake Name",
                 endereço: "Updated",
-                telefone: "4002-8922",
+                telefone: "40028922",
                 cep: "11111-111",
                 tabela: "Normal",
             })
