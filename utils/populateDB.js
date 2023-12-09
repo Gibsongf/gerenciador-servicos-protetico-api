@@ -41,12 +41,12 @@ async function main() {
 }
 
 const mongoDB = process.env.MONGODB;
-main().catch((err) => console.log(err));
+// main().catch((err) => console.log(err));
 async function populateTest() {
     const local = await createLocal();
     const dentista = await createDentista(local._id);
     const produto = await createProduto();
-    const serviço = await createServiço();
+    const serviço = await createServiçoTest(dentista, produto);
     return { local, dentista, produto, serviço };
 }
 const createDentista = async (local_id) => {
@@ -105,5 +105,16 @@ const createServiço = async () => {
     //console.log("Created Serviço!");
     return serviço;
 };
-
-// module.exports = populateTest;
+const createServiçoTest = async (dentista, produto) => {
+    const serviço = new Serviço({
+        dentista: dentista._id,
+        paciente: faker.person.fullName(),
+        produto: [produto._id],
+        local: dentista.local._id,
+        statusEntrega: false,
+    });
+    await serviço.save();
+    //console.log("Created Serviço!");
+    return serviço;
+};
+module.exports = populateTest;

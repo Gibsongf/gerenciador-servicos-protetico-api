@@ -19,8 +19,8 @@ describe("/get/ Produto", () => {
             "application/json; charset=utf-8"
         );
 
-        expect(res.body["todos_produtos"][0].nome).toEqual(data.produto.nome);
-        expect(res.body["todos_produtos"].length).toBe(1);
+        expect(res.body["all"][0].nome).toEqual(data.produto.nome);
+        expect(res.body["all"].length).toBe(1);
         expect(res.status).toEqual(200);
     });
     test("one Produto details", async () => {
@@ -42,8 +42,8 @@ describe("/post/ Produto ", () => {
             .type("form")
             .send({
                 nome: "Fake Produto",
-                "valor normal": faker.commerce.price({ min: 100, max: 200 }),
-                "valor reduzido": faker.commerce.price({ max: 100 }),
+                valor_normal: faker.commerce.price({ min: 100, max: 200 }),
+                valor_reduzido: faker.commerce.price({ max: 100 }),
             })
             .set("Accept", "application/json");
         expect(res.headers["content-type"]).toEqual(
@@ -61,7 +61,7 @@ describe("/put/ Produto ", () => {
             .type("form")
             .send({
                 nome: "Nome Updated",
-                "valor normal": 1000,
+                valor_normal: 1000,
             })
             .set("Accept", "application/json");
         expect(res.headers["content-type"]).toEqual(

@@ -70,7 +70,7 @@ exports.novo = [
             });
             res.status(400).json({ errors });
         } else {
-            console.log(serviço);
+            // console.log(serviço);
             await serviço.save();
             res.status(200).json({ message: "Serviço Saved", serviço });
         }
@@ -105,13 +105,11 @@ exports.detailsByDentist = asyncHandler(async (req, res) => {
 // Update
 // Modificar um serviço
 exports.editar = [
-    body("local").notEmpty().withMessage("Local não especificado"),
-    body("dentista")
-        .notEmpty()
-        .withMessage("Dentista não especificado")
-        .isMongoId()
-        .withMessage("Dentista não encontrado"),
-    body("paciente").notEmpty().withMessage("Paciente não especificado"),
+    body("local").isMongoId().withMessage("Local não encontrado"),
+    body("dentista").isMongoId().withMessage("Dentista não encontrado"),
+    body("paciente")
+        .isLength({ min: 3 })
+        .withMessage("Paciente não especificado"),
 
     asyncHandler(async (req, res) => {
         const err = validationResult(req);

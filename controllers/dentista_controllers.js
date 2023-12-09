@@ -75,7 +75,7 @@ exports.novo = [
             });
 
             await dentista.save();
-            console.log("saved");
+            // console.log("saved");
             res.status(200).json({ message: "Dentista saved", dentista });
         }
     }),

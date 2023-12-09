@@ -9,6 +9,7 @@ const { faker } = require("@faker-js/faker");
 let data;
 
 beforeAll(async () => {
+    // init a test mongoDB test
     await initServer();
     data = await populateTest();
 });
@@ -18,8 +19,8 @@ describe("/get/ dentista", () => {
         expect(res.headers["content-type"]).toEqual(
             "application/json; charset=utf-8"
         );
-        expect(res.body["todos_dentistas"][0].cpf).toEqual(data.dentista.cpf);
-        expect(res.body["todos_dentistas"].length).toBe(1);
+        expect(res.body["all"][0].cpf).toEqual(data.dentista.cpf);
+        expect(res.body["all"].length).toBe(1);
         expect(res.status).toEqual(200);
     });
     test("one dentistas details", async () => {
