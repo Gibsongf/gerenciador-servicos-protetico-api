@@ -79,7 +79,6 @@ describe("/put/ Serviço ", () => {
         );
         expect(res.body.serviço.statusEntrega).toEqual(true);
         expect(res.body.serviço.paciente).toEqual("new fake");
-
         expect(res.body.message).toEqual("Serviço Updated");
         expect(res.status).toEqual(200);
     });

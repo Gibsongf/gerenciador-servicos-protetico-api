@@ -104,7 +104,6 @@ exports.editar = [
         .isPostalCode("BR")
         .withMessage("Invalid Cep."),
     asyncHandler(async (req, res) => {
-        console.log(req.body);
         const err = validationResult(req);
         const update = Utility.emptyFields(req.body);
 
