@@ -58,7 +58,6 @@ exports.novo = [
         .withMessage("Cep Invalido."),
     asyncHandler(async (req, res) => {
         const err = validationResult(req);
-
         const local = new Local({
             nome: req.body.nome,
             endereço: req.body.endereço,
@@ -66,12 +65,13 @@ exports.novo = [
             telefone: req.body.telefone,
             cep: req.body.cep,
         });
-
         if (!err.isEmpty()) {
             const errors = {};
             err.errors.forEach((e) => {
                 errors[e.path] = e.msg;
             });
+            console.log(errors);
+
             res.status(400).json({ errors });
         } else {
             // console.log("saved");

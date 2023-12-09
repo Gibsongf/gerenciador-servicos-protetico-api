@@ -24,8 +24,9 @@ const col = (local, dentista) => {
                 " ",
             ],
             key: "col1",
-            width: 15,
+            width: 30,
         },
+
         { key: "col2", width: 30 },
         { key: "col3", width: 15 },
     ];
@@ -45,10 +46,10 @@ const mergeC = (worksheet) => {
 };
 const valorType = (p, local) => {
     if (local.tabela === "Reduzido") {
-        return p.valor_reduzido;
+        return `R$ ${p.valor_reduzido}`;
     }
     if (local.tabela === "Normal") {
-        return p.valor_normal;
+        return `R$ ${p.valor_normal}`;
     }
 };
 router.get("/:id", async (req, res) => {
@@ -128,10 +129,11 @@ router.get("/:id/:date", async (req, res) => {
         mergeC(worksheet);
 
         worksheet.columns = col(local, dentista);
+        console.log(serviços);
         // merge header cell one by if use A1:C6 the only header available will be the first one
         serviços.forEach((serviço) => {
             const { produto } = serviço;
-            // console.log(serviço);
+            console.log(serviço);
             produto.forEach((p, index) => {
                 if (index === 0) {
                     data.push({

@@ -5,8 +5,6 @@ const LocalSchema = new Schema({
     nome: { type: String },
     endereço: { type: String, require: true },
     cep: { type: String, maxLength: 9, minLength: 9, require: true },
-    // should do this at the local controllers
-    // dentistas: [{ type: Schema.Types.ObjectId }],
     telefone: { type: String, maxLength: 9, minLength: 8 },
     tabela: {
         type: String,

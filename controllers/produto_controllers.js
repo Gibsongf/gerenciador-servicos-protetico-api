@@ -101,7 +101,7 @@ exports.editar = [
                 }
             ).exec();
             await produto.save();
-            res.status(200).json({ message: "Local updated", produto });
+            res.status(200).json({ message: "Produto updated", produto });
         }
     }),
 ];

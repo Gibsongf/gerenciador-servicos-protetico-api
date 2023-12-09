@@ -22,11 +22,11 @@ async function main() {
     await mongoose.connect(mongoDB);
     const collections = mongoose.connection.collections;
 
-    // await Promise.all(
-    //     Object.values(collections).map(async (collection) => {
-    //         await collection.deleteMany({}); // an empty mongodb selector object ({}) must be passed as the filter argument
-    //     })
-    // );
+    await Promise.all(
+        Object.values(collections).map(async (collection) => {
+            await collection.deleteMany({}); // an empty mongodb selector object ({}) must be passed as the filter argument
+        })
+    );
 
     for (let i = 0; i < 5; i++) {
         const local = await createLocal();
@@ -41,7 +41,7 @@ async function main() {
 }
 
 const mongoDB = process.env.MONGODB;
-// main().catch((err) => console.log(err));
+main().catch((err) => console.log(err));
 async function populateTest() {
     const local = await createLocal();
     const dentista = await createDentista(local._id);
@@ -117,4 +117,4 @@ const createServiçoTest = async (dentista, produto) => {
     //console.log("Created Serviço!");
     return serviço;
 };
-module.exports = populateTest;
+// module.exports = populateTest;
