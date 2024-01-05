@@ -52,7 +52,7 @@ exports.novo = [
     body("local").notEmpty().withMessage("Local não especificado"),
     body("produto").exists().withMessage("Produto não especificado"),
     asyncHandler(async (req, res) => {
-        // console.log(req.body);
+        console.log(req.body);
         const err = validationResult(req);
         const statusEntrega = req.body["status-entrega"] ? true : false;
         const serviço = new Serviço({
@@ -60,7 +60,7 @@ exports.novo = [
             produto: req.body.produto,
             paciente: req.body.paciente,
             local: req.body.local,
-            statusEntrega: statusEntrega,
+            statusEntrega: req.body.statusEntrega,
         });
         if (!err.isEmpty()) {
             // console.log(err.errors);
@@ -71,7 +71,7 @@ exports.novo = [
             res.status(400).json({ errors });
         } else {
             // console.log(serviço);
-            await serviço.save();
+            // await serviço.save();
             res.status(200).json({ message: "Serviço Saved", serviço });
         }
     }),

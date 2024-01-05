@@ -129,11 +129,9 @@ router.get("/:id/:date", async (req, res) => {
         mergeC(worksheet);
 
         worksheet.columns = col(local, dentista);
-        console.log(serviços);
         // merge header cell one by if use A1:C6 the only header available will be the first one
         serviços.forEach((serviço) => {
             const { produto } = serviço;
-            console.log(serviço);
             produto.forEach((p, index) => {
                 if (index === 0) {
                     data.push({
@@ -147,16 +145,12 @@ router.get("/:id/:date", async (req, res) => {
             });
             data.push({ col1: "", col2: "", col3: "" });
         });
-
-        console.log(data);
         worksheet.addRows(data);
-
         // Set response headers to indicate a downloadable Excel file
         res.setHeader(
             "Content-Type",
             "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
         );
-        // res.sendStatus(200);
         // Send the Excel file as a buffer to the client
         const buffer = await workbook.xlsx.writeBuffer();
         res.send(buffer);
