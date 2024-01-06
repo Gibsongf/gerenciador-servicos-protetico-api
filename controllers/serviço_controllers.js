@@ -54,7 +54,7 @@ exports.novo = [
     asyncHandler(async (req, res) => {
         console.log(req.body);
         const err = validationResult(req);
-        const statusEntrega = req.body["status-entrega"] ? true : false;
+        // const statusEntrega = req.body["status-entrega"] ? true : false;
         const serviço = new Serviço({
             dentista: req.body.dentista,
             produto: req.body.produto,
