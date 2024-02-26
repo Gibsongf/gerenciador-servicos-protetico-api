@@ -1,6 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
 const User = require("../models/user");
+const passport = require("passport");
 
 exports.register = [
     body("username")
@@ -32,3 +33,24 @@ exports.register = [
         }
     }),
 ];
+
+exports.login = function (req, res) {
+    passport.authenticate("local", (err, user, info) => {
+        if (err || !user) {
+            return res.status(400).json({
+                message: "Something is not right",
+                user: user,
+            });
+        }
+        req.login(user, (err) => {
+            if (err) {
+                res.send(err);
+            }
+            const token = jwt.sign(
+                { id: user._id, user_name: user.user_name },
+                process.env.JwtKey
+            );
+            return res.json({ token: token });
+        });
+    })(req, res);
+};

@@ -16,24 +16,5 @@ function saltPassword(req, res, next) {
 }
 
 router.post("/register", saltPassword, user_controllers.register);
-router.post("/login", function (req, res, next) {
-    passport.authenticate("local", (err, user, info) => {
-        if (err || !user) {
-            return res.status(400).json({
-                message: "Something is not right",
-                user: user,
-            });
-        }
-        req.login(user, (err) => {
-            if (err) {
-                res.send(err);
-            }
-            const token = jwt.sign(
-                { id: user._id, user_name: user.user_name },
-                process.env.JwtKey
-            );
-            return res.json({ token: token });
-        });
-    })(req, res);
-});
+router.post("/login", user_controllers.login);
 module.exports = router;
