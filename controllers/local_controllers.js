@@ -20,19 +20,16 @@ exports.todos = asyncHandler(async (req, res) => {
     res.status(200).json({
         all,
     });
-    // res.json({ message: "Not implemented 'todos locais'" });
 });
 // Detalhes de um local
 exports.detalhes = asyncHandler(async (req, res) => {
     const local = await Local.findById(req.params.id).exec();
-    // console.log(local);
     if (!local) {
         res.status(404);
     }
     const dentistas = await Dentista.find({ local: local._id }).exec();
 
     res.status(200).json({ local, dentistas });
-    // res.json({ message: "Not implemented 'detalhes local'" });
 });
 
 // Create
@@ -118,7 +115,6 @@ exports.editar = [
             const local = await Local.findByIdAndUpdate(req.params.id, update, {
                 new: true,
             }).exec();
-            // console.log(err);
             await local.save();
             res.status(200).json({ message: "Local updated", local });
         }
@@ -137,7 +133,7 @@ exports.deletar = asyncHandler(async (req, res) => {
         return res.status(409).json({
             status: "error",
             message:
-                "Local cannot be deleted because there are associated Dentista",
+                "Local não pode ser deletado pois possui Dentista relacionados a ele",
         });
     } else {
         await Local.findByIdAndRemove(req.params.id).exec();

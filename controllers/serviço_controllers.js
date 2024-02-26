@@ -2,7 +2,6 @@ const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
 const Serviço = require("../models/serviço");
 const Utility = require("../utils/utility");
-const Local = require("../models/local");
 
 // Route Test
 exports.test = asyncHandler(async (req, res) => {
@@ -35,7 +34,6 @@ exports.detalhes = asyncHandler(async (req, res) => {
             message: "Serviço não foi encontrado",
         });
     }
-    // console.log(serviço);
     res.status(200).json({
         serviço,
     });
@@ -52,7 +50,6 @@ exports.novo = [
     body("local").notEmpty().withMessage("Local não especificado"),
     body("produto").exists().withMessage("Produto não especificado"),
     asyncHandler(async (req, res) => {
-        console.log(req.body);
         const err = validationResult(req);
         // const statusEntrega = req.body["status-entrega"] ? true : false;
         const serviço = new Serviço({
@@ -63,15 +60,13 @@ exports.novo = [
             statusEntrega: req.body.statusEntrega,
         });
         if (!err.isEmpty()) {
-            // console.log(err.errors);
             const errors = {};
             err.errors.forEach((e) => {
                 errors[e.path] = e.msg;
             });
             res.status(400).json({ errors });
         } else {
-            // console.log(serviço);
-            // await serviço.save();
+            await serviço.save();
             res.status(200).json({ message: "Serviço Saved", serviço });
         }
     }),
@@ -92,7 +87,6 @@ exports.detailsByLocal = asyncHandler(async (req, res) => {
 });
 exports.detailsByDentist = asyncHandler(async (req, res) => {
     const serviço = await Serviço.find({ dentista: req.params.id }).exec();
-    // console.log(serviço);
     if (!serviço) {
         res.status(404).json({
             message: "Serviço não foi encontrado",
@@ -113,16 +107,13 @@ exports.editar = [
 
     asyncHandler(async (req, res) => {
         const err = validationResult(req);
-        // console.log(req.body);
         if (req.body.produto.length < 1) {
             err.errors.push({
                 msg: "Nenhum produto selecionado",
                 path: "produto",
             });
         }
-        // console.log(err);
         const update = Utility.emptyFields(req.body, true);
-
         if (!err.isEmpty()) {
             const errors = {};
             err.errors.forEach((e) => {

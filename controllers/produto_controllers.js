@@ -19,7 +19,6 @@ exports.todos = asyncHandler(async (req, res) => {
     res.status(200).json({
         all,
     });
-    // res.json({ message: "Not implemented 'todos locais'" });
 });
 // Detalhes de um produto
 exports.detalhes = asyncHandler(async (req, res) => {
@@ -54,14 +53,12 @@ exports.novo = [
             valor_reduzido: req.body.valor_reduzido,
         });
         if (!err.isEmpty()) {
-            // console.log(err.errors);
             const errors = {};
             err.errors.forEach((e) => {
                 errors[e.path] = e.msg;
             });
             res.status(400).json({ errors });
         } else {
-            // console.log("saved");
             await produto.save();
             res.status(200).json({ message: "Produto saved", produto });
         }
@@ -117,7 +114,7 @@ exports.deletar = asyncHandler(async (req, res) => {
         return res.status(409).json({
             status: "error",
             message:
-                "Produto cannot be deleted because there are associated with Serviço",
+                "Produto não pode ser deletado pois possui Serviços relacionados a ele",
         });
     } else {
         await Produto.findByIdAndRemove(req.params.id).exec();
