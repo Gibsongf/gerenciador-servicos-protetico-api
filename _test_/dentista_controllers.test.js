@@ -1,7 +1,7 @@
 const request = require("supertest");
 const app = require("../utils/appTest");
 
-const populateTest = require("../utils/populateDB");
+const populateTest = require("../utils/populateDBTest");
 const mongoose = require("mongoose");
 const initServer = require("../utils/mongoConfigTest");
 const { ObjectId } = require("mongodb");
