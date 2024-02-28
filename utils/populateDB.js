@@ -15,6 +15,7 @@ async function main() {
     await mongoose.connect(mongoDB);
     const collections = mongoose.connection.collections;
     //empty db before populate
+    //need to register user again
     await Promise.all(
         Object.values(collections).map(async (collection) => {
             // an empty mongodb selector object ({}) must be passed as the filter argument

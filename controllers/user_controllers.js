@@ -2,6 +2,7 @@ const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
 const User = require("../models/user");
 const passport = require("passport");
+const jwt = require("jsonwebtoken");
 
 exports.register = [
     body("username")
@@ -25,7 +26,6 @@ exports.register = [
         });
 
         if (!err.isEmpty()) {
-            console.log(err.errors);
             res.json({ errors: err.errors });
         } else {
             await user.save();

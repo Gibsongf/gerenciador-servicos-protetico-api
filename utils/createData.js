@@ -3,7 +3,6 @@ const Dentista = require("../models/dentista");
 const Serviço = require("../models/serviço");
 const Local = require("../models/local");
 const Produto = require("../models/produto");
-
 const randomNumber = (array) => {
     if (array.length === 1) {
         return 0;
