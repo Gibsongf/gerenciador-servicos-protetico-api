@@ -67,7 +67,6 @@ exports.novo = [
             err.errors.forEach((e) => {
                 errors[e.path] = e.msg;
             });
-            console.log(errors);
 
             res.status(400).json({ errors });
         } else {
@@ -98,7 +97,7 @@ exports.editar = [
         .notEmpty()
         .withMessage("Cep tem que ser especificado")
         .isPostalCode("BR")
-        .withMessage("Invalid Cep."),
+        .withMessage("Cep Invalido."),
     asyncHandler(async (req, res) => {
         const err = validationResult(req);
         const update = Utility.emptyFields(req.body);
