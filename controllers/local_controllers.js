@@ -72,7 +72,7 @@ exports.novo = [
         } else {
             await local.save();
             res.status(200).json({
-                message: "Local saved",
+                message: "Local salvo",
                 local,
             });
         }
@@ -114,7 +114,7 @@ exports.editar = [
                 new: true,
             }).exec();
             await local.save();
-            res.status(200).json({ message: "Local updated", local });
+            res.status(200).json({ message: "Local atualizado", local });
         }
     }),
 ];

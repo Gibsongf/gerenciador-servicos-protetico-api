@@ -24,7 +24,7 @@ exports.todos = asyncHandler(async (req, res) => {
 exports.detalhes = asyncHandler(async (req, res) => {
     const produto = await Produto.findById(req.params.id).exec();
     if (!produto) {
-        res.status(404).json({ message: "Produto não foi encontrado pela ID" });
+        res.status(404).json({ message: "Produto não foi encontrado" });
     }
 
     const serviço = await Serviço.find({ produto: produto._id }).exec();
@@ -47,20 +47,28 @@ exports.novo = [
         .withMessage("São aceitos apenas números"),
     asyncHandler(async (req, res) => {
         const err = validationResult(req);
+        let errors = {};
+        const hasIt = await Produto.findOne({
+            nome: req.body.nome,
+        });
+
         const produto = new Produto({
             nome: req.body.nome, //require true
             valor_normal: req.body.valor_normal,
             valor_reduzido: req.body.valor_reduzido,
         });
-        if (!err.isEmpty()) {
-            const errors = {};
+
+        if (hasIt) {
+            errors = { nome: "Produto já registrado" };
+            res.status(400).json({ errors });
+        } else if (!err.isEmpty()) {
             err.errors.forEach((e) => {
                 errors[e.path] = e.msg;
             });
             res.status(400).json({ errors });
         } else {
             await produto.save();
-            res.status(200).json({ message: "Produto saved", produto });
+            res.status(200).json({ message: "Produto salvo", produto });
         }
     }),
 ];
@@ -81,8 +89,8 @@ exports.editar = [
     asyncHandler(async (req, res) => {
         const err = validationResult(req);
         const update = Utility.emptyFields(req.body, true);
-        //'local' to be able to update need to return a id value at forms
-
+        //'local' need a id to be able to update, need to return id
+        // console.log(req.body, "body");
         if (!err.isEmpty()) {
             const errors = {};
             err.errors.forEach((e) => {
@@ -98,7 +106,7 @@ exports.editar = [
                 }
             ).exec();
             await produto.save();
-            res.status(200).json({ message: "Produto updated", produto });
+            res.status(200).json({ message: "Produto atualizado", produto });
         }
     }),
 ];
