@@ -46,9 +46,8 @@ exports.novo = [
     body("telefone")
         .trim()
         .escape()
-        //DDD SEMPRE 011
-        .isLength({ max: 9, min: 8 })
-        .withMessage("O Número deve ter 8 ou 9 dígitos."),
+        .isLength({ max: 13, min: 13 })
+        .withMessage("O Número está incompleto"),
     body("cpf")
         .trim()
         .escape()
@@ -91,11 +90,8 @@ exports.editar = [
     body("telefone")
         .trim()
         .escape()
-        .isString()
-        .withMessage("São aceito apenas números")
-        //DDD SEMPRE 011
-        .isLength({ max: 10, min: 8 })
-        .withMessage("O Número deve ter 8 ou 9 dígitos."),
+        .isLength({ max: 13, min: 13 })
+        .withMessage("O Número está incompleto"),
     body("cpf")
         .trim()
         .escape()
@@ -106,7 +102,7 @@ exports.editar = [
         const err = validationResult(req);
 
         const update = Utility.emptyFields(req.body);
-
+        const t = req.body.telefone.trim();
         if (!err.isEmpty()) {
             const errors = {};
             err.errors.forEach((e) => {
