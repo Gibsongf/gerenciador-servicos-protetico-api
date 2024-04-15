@@ -43,11 +43,10 @@ exports.novo = [
     body("telefone")
         .trim()
         .escape()
-        .isNumeric()
-        .withMessage("São aceito apenas números")
-        //DDD SEMPRE 011
-        .isLength({ max: 9, min: 8 })
-        .withMessage("O Número deve ter 8 ou 9 dígitos."),
+        .isLength({ max: 14 })
+        .withMessage("Número inválido ")
+        .isLength({ min: 13 })
+        .withMessage("Número incompleto"),
     body("cep")
         .notEmpty()
         .withMessage("Cep tem que ser especificado")
@@ -89,10 +88,10 @@ exports.editar = [
     body("telefone")
         .trim()
         .escape()
-        .isString()
-        .withMessage("São aceito apenas números")
-        .isLength({ max: 10, min: 8 })
-        .withMessage("O Número deve ter 8 ou 9 dígitos."),
+        .isLength({ max: 14 })
+        .withMessage("Número inválido ")
+        .isLength({ min: 13 })
+        .withMessage("Número incompleto"),
     body("cep")
         .notEmpty()
         .withMessage("Cep tem que ser especificado")
