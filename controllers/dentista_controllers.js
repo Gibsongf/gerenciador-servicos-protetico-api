@@ -46,8 +46,10 @@ exports.novo = [
     body("telefone")
         .trim()
         .escape()
-        .isLength({ max: 13, min: 13 })
-        .withMessage("O Número está incompleto"),
+        .isLength({ max: 14 })
+        .withMessage("Número inválido ")
+        .isLength({ min: 13 })
+        .withMessage("Número incompleto"),
     body("cpf")
         .trim()
         .escape()
@@ -56,7 +58,7 @@ exports.novo = [
         .withMessage("O CPF deve ter 11 dígitos."),
     asyncHandler(async (req, res) => {
         const err = validationResult(req);
-        // console.log(err);
+        console.log(req.body);
         if (!err.isEmpty()) {
             const errors = {};
             err.errors.forEach((e) => {
@@ -90,8 +92,10 @@ exports.editar = [
     body("telefone")
         .trim()
         .escape()
-        .isLength({ max: 13, min: 13 })
-        .withMessage("O Número está incompleto"),
+        .isLength({ max: 14 })
+        .withMessage("Número inválido ")
+        .isLength({ min: 13 })
+        .withMessage("Número incompleto"),
     body("cpf")
         .trim()
         .escape()
@@ -100,9 +104,8 @@ exports.editar = [
         .withMessage("O CPF deve ter 11 dígitos."),
     asyncHandler(async (req, res) => {
         const err = validationResult(req);
-
         const update = Utility.emptyFields(req.body);
-        const t = req.body.telefone.trim();
+        console.log(req.body);
         if (!err.isEmpty()) {
             const errors = {};
             err.errors.forEach((e) => {
