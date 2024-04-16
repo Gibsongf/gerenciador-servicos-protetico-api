@@ -103,6 +103,7 @@ exports.editar = [
         .withMessage("O CPF deve ter 11 dígitos."),
     asyncHandler(async (req, res) => {
         const err = validationResult(req);
+        const update = Utility.emptyFields(req.body);
         if (!err.isEmpty()) {
             const errors = {};
             err.errors.forEach((e) => {
