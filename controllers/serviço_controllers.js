@@ -13,6 +13,7 @@ exports.todos = asyncHandler(async (req, res) => {
     const all = await Serviço.find()
         .populate("dentista")
         .populate("produto")
+        .populate("local")
         .exec();
 
     if (!all) {
@@ -51,7 +52,6 @@ exports.novo = [
     body("produto").exists().withMessage("Produto não especificado"),
     asyncHandler(async (req, res) => {
         const err = validationResult(req);
-        // const statusEntrega = req.body["status-entrega"] ? true : false;
         const serviço = new Serviço({
             dentista: req.body.dentista,
             produto: req.body.produto,
@@ -67,7 +67,7 @@ exports.novo = [
             res.status(400).json({ errors });
         } else {
             await serviço.save();
-            res.status(200).json({ message: "Serviço Saved", serviço });
+            res.status(200).json({ message: "Serviço Salvo", serviço });
         }
     }),
 ];
@@ -107,12 +107,13 @@ exports.editar = [
 
     asyncHandler(async (req, res) => {
         const err = validationResult(req);
-        if (req.body.produto.length < 1) {
+        if (!req.body.produto.length || !req.body.produto[0]) {
             err.errors.push({
                 msg: "Nenhum produto selecionado",
                 path: "produto",
             });
         }
+
         const update = Utility.emptyFields(req.body, true);
         if (!err.isEmpty()) {
             const errors = {};
@@ -129,7 +130,7 @@ exports.editar = [
                 }
             ).exec();
             await serviço.save();
-            res.status(200).json({ message: "Serviço Updated", serviço });
+            res.status(200).json({ message: "Serviço Atualizado", serviço });
         }
     }),
 ];

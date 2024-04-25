@@ -24,7 +24,6 @@ exports.emptyFields = (obj, underline) => {
             newObj[k] = obj[k];
         }
     });
-    console.log(newObj);
     return newObj;
 };
 exports.formatDate = (timestamp) => {

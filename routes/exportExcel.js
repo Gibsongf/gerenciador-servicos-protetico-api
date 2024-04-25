@@ -103,7 +103,10 @@ router.get("/:id", async (req, res) => {
         res.status(500).send("Internal Server Error");
     }
 });
-router.get("/:id/:date", async (req, res) => {
+router.get("/:dentista/mes/:inicial/:final", async (req, res) => {
+    console.log(req.params);
+    res.status(500);
+    return;
     try {
         const dentista = await Dentista.findById(req.params.id)
             .populate("local")
