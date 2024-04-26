@@ -18,6 +18,7 @@ async function main() {
     //need to register user again
     await Promise.all(
         Object.values(collections).map(async (collection) => {
+            console.log(collection.name);
             // an empty mongodb selector object ({}) must be passed as the filter argument
             await collection.deleteMany({});
         })
@@ -29,8 +30,12 @@ async function main() {
         await createProduto(produtoArray);
     }
     console.log("local, dentista, produto saved");
+    let day = 1;
+    let date = () => `2024-04-${day}`;
     for (let i = 0; i < 10; i++) {
-        await createServiço(dentistaArray, produtoArray);
+        await createServiço(dentistaArray, produtoArray, date());
+        console.log(date());
+        day++;
     }
     console.log("serviço saved");
 

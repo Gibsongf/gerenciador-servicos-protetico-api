@@ -8,7 +8,6 @@ const DentistaSchema = new Schema({
     telefone: { type: String, maxLength: 14, minLength: 13 },
     cpf: {
         type: String,
-        required: true,
         unique: true,
         maxLength: 11,
         minLength: 11,

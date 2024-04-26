@@ -3,6 +3,8 @@ const Dentista = require("../models/dentista");
 const Serviço = require("../models/serviço");
 const Local = require("../models/local");
 const Produto = require("../models/produto");
+const { format } = require("date-fns");
+
 const randomNumber = (array) => {
     if (array.length === 1) {
         return 0;
@@ -15,7 +17,7 @@ exports.createDentista = async (local_id, dentistaArray) => {
         nome: faker.person.firstName(),
         sobrenome: faker.person.lastName(),
         local: local_id,
-        telefone: String(faker.phone.number("####-####")),
+        telefone: String(faker.phone.number("#############")),
         cpf: String(faker.phone.number("###########")),
     });
     await dentista.save();
@@ -32,7 +34,7 @@ exports.createLocal = async () => {
         endereço: faker.location.streetAddress(),
         tabela: type,
         cep: faker.location.zipCode(),
-        telefone: String(faker.phone.number("####-####")),
+        telefone: String(faker.phone.number("#############")),
     });
     await local.save();
     return local;
@@ -49,19 +51,22 @@ exports.createProduto = async (produtoArray) => {
 
     return produto;
 };
-exports.createServiço = async (dentistaArray, produtoArray) => {
+exports.createServiço = async (dentistaArray, produtoArray, date) => {
     const dentista = dentistaArray[randomNumber(dentistaArray)];
     const produto = produtoArray[randomNumber(produtoArray)];
     const produto2 = produtoArray[randomNumber(produtoArray)];
-
+    const formattedDate = format(new Date(date), "yyyy-MM-dd");
+    // console.log(formattedDate);
     const serviço = new Serviço({
         dentista: dentista._id,
         paciente: faker.person.fullName(),
         produto: [produto._id, produto2._id],
         local: dentista.local._id,
         statusEntrega: false,
+        dataRegistro: formattedDate,
     });
     await serviço.save();
+    console.log(serviço);
     //console.log("Created Serviço!");
     return serviço;
 };

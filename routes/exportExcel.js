@@ -44,12 +44,12 @@ const mergeC = (worksheet) => {
         };
     });
 };
-const valorType = (p, local) => {
+const valorType = (produto, local) => {
     if (local.tabela === "Reduzido") {
-        return `R$ ${p.valor_reduzido}`;
+        return `R$ ${produto.valor_reduzido}`;
     }
     if (local.tabela === "Normal") {
-        return `R$ ${p.valor_normal}`;
+        return `R$ ${produto.valor_normal}`;
     }
 };
 router.get("/:id", async (req, res) => {
@@ -103,23 +103,26 @@ router.get("/:id", async (req, res) => {
         res.status(500).send("Internal Server Error");
     }
 });
-router.get("/:dentista/mes/:inicial/:final", async (req, res) => {
-    console.log(req.params);
-    res.status(500);
-    return;
-    try {
-        const dentista = await Dentista.findById(req.params.id)
-            .populate("local")
-            .exec();
-        const serviços = await Serviço.find({
-            dentista: dentista._id,
-            dataRegistro: req.params.date,
+router.get("/:id/mes/:inicial/:final", async (req, res) => {
+    // console.log(req.params);
+
+    // dataRegistro: {
+    //     $gt: new Date(inicial),
+    //     $lt: new Date(final)
+    // }
+    const { id, inicial, final } = req.params;
+    //setting for one dentist and his services in a date range
+    const [dentista, serviços] = await Promise.all([
+        Dentista.findById(id).populate("local").exec(),
+        Serviço.find({
+            dentista: id,
+            dataRegistro: { $gt: new Date(inicial), $lt: new Date(final) },
         })
             .populate("produto")
-            .exec();
-
-        const { local } = dentista;
-
+            .exec(),
+    ]);
+    const { local } = dentista;
+    try {
         const data = [
             { col1: "Cliente", col2: "Produto", col3: "Valor" },
             { col1: "", col2: "", col3: "" },
@@ -132,10 +135,15 @@ router.get("/:dentista/mes/:inicial/:final", async (req, res) => {
         mergeC(worksheet);
 
         worksheet.columns = col(local, dentista);
+
+        //we can create a obj {col1 col2 col3} for each service and then pass it to data
         // merge header cell one by if use A1:C6 the only header available will be the first one
+        // const serviceCol = {};
         serviços.forEach((serviço) => {
-            const { produto } = serviço;
+            const { produto, paciente } = serviço;
+            // serviceCol[paciente] = produto;
             produto.forEach((p, index) => {
+                //first iteration register paciente with produto and value
                 if (index === 0) {
                     data.push({
                         col1: serviço.paciente,
@@ -143,6 +151,7 @@ router.get("/:dentista/mes/:inicial/:final", async (req, res) => {
                         col3: valorType(p, local),
                     });
                 } else {
+                    //just the product and its value
                     data.push({ col2: p.nome, col3: valorType(p, local) });
                 }
             });
