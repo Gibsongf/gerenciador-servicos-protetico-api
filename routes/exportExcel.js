@@ -106,10 +106,6 @@ router.get("/:id", async (req, res) => {
 router.get("/:id/mes/:inicial/:final", async (req, res) => {
     // console.log(req.params);
 
-    // dataRegistro: {
-    //     $gt: new Date(inicial),
-    //     $lt: new Date(final)
-    // }
     const { id, inicial, final } = req.params;
     //setting for one dentist and his services in a date range
     const [dentista, serviços] = await Promise.all([
@@ -122,6 +118,11 @@ router.get("/:id/mes/:inicial/:final", async (req, res) => {
             .exec(),
     ]);
     const { local } = dentista;
+    console.log(serviços);
+    if (!serviços.length) {
+        res.status(500);
+        return;
+    }
     try {
         const data = [
             { col1: "Cliente", col2: "Produto", col3: "Valor" },
@@ -138,25 +139,7 @@ router.get("/:id/mes/:inicial/:final", async (req, res) => {
 
         //we can create a obj {col1 col2 col3} for each service and then pass it to data
         // merge header cell one by if use A1:C6 the only header available will be the first one
-        // const serviceCol = {};
-        serviços.forEach((serviço) => {
-            const { produto, paciente } = serviço;
-            // serviceCol[paciente] = produto;
-            produto.forEach((p, index) => {
-                //first iteration register paciente with produto and value
-                if (index === 0) {
-                    data.push({
-                        col1: serviço.paciente,
-                        col2: p.nome,
-                        col3: valorType(p, local),
-                    });
-                } else {
-                    //just the product and its value
-                    data.push({ col2: p.nome, col3: valorType(p, local) });
-                }
-            });
-            data.push({ col1: "", col2: "", col3: "" });
-        });
+        utils.reverseNestedService(data, serviços, local.tabela);
         worksheet.addRows(data);
         // Set response headers to indicate a downloadable Excel file
         res.setHeader(
