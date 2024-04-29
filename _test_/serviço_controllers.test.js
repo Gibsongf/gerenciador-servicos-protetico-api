@@ -57,7 +57,7 @@ describe("/post/ Serviço ", () => {
         expect(res.headers["content-type"]).toEqual(
             "application/json; charset=utf-8"
         );
-        expect(res.body.message).toEqual("Serviço Saved");
+        expect(res.body.message).toEqual("Serviço Salvo");
         expect(res.status).toEqual(200);
     });
 });
@@ -79,7 +79,7 @@ describe("/put/ Serviço ", () => {
         );
         expect(res.body.serviço.statusEntrega).toEqual(true);
         expect(res.body.serviço.paciente).toEqual("new fake");
-        expect(res.body.message).toEqual("Serviço Updated");
+        expect(res.body.message).toEqual("Serviço Atualizado");
         expect(res.status).toEqual(200);
     });
 });

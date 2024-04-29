@@ -59,7 +59,6 @@ exports.novo = [
             local: req.body.local,
             statusEntrega: req.body.statusEntrega,
         });
-        console.log(serviço);
         if (!err.isEmpty()) {
             const errors = {};
             err.errors.forEach((e) => {

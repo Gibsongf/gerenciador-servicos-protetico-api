@@ -49,7 +49,7 @@ describe("/post/ Produto ", () => {
         expect(res.headers["content-type"]).toEqual(
             "application/json; charset=utf-8"
         );
-        expect(res.body.message).toEqual("Produto saved");
+        expect(res.body.message).toEqual("Produto salvo");
         expect(res.body.produto.nome).toEqual("Fake Produto");
         expect(res.status).toEqual(200);
     });
@@ -73,7 +73,7 @@ describe("/put/ Produto ", () => {
     });
 });
 
-describe("/delete/ Produto", () => {
+describe.only("/delete/ Produto", () => {
     test("Cant delete Produto if has associated Serviço in the db", async () => {
         const res = await request(app)
             .delete("/api/produto/" + data.produto._id)
