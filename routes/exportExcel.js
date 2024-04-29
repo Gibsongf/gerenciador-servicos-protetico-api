@@ -118,40 +118,40 @@ router.get("/:id/mes/:inicial/:final", async (req, res) => {
             .exec(),
     ]);
     const { local } = dentista;
-    console.log(serviços);
+    // console.log(serviços);
     if (!serviços.length) {
-        res.status(500);
-        return;
-    }
-    try {
-        const data = [
-            { col1: "Cliente", col2: "Produto", col3: "Valor" },
-            { col1: "", col2: "", col3: "" },
-            // Add your data from the database here
-        ];
-        // Create a new Excel workbook
-        const workbook = new ExcelJS.Workbook();
+        res.status(404).json({ error: "Nenhum serviço encontrado" });
+    } else {
+        try {
+            const data = [
+                { col1: "Cliente", col2: "Produto", col3: "Valor" },
+                { col1: "", col2: "", col3: "" },
+                // Add your data from the database here
+            ];
+            // Create a new Excel workbook
+            const workbook = new ExcelJS.Workbook();
 
-        const worksheet = workbook.addWorksheet("Sheet 1");
-        mergeC(worksheet);
+            const worksheet = workbook.addWorksheet("Sheet 1");
+            mergeC(worksheet);
 
-        worksheet.columns = col(local, dentista);
+            worksheet.columns = col(local, dentista);
 
-        //we can create a obj {col1 col2 col3} for each service and then pass it to data
-        // merge header cell one by if use A1:C6 the only header available will be the first one
-        utils.reverseNestedService(data, serviços, local.tabela);
-        worksheet.addRows(data);
-        // Set response headers to indicate a downloadable Excel file
-        res.setHeader(
-            "Content-Type",
-            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        );
-        // Send the Excel file as a buffer to the client
-        const buffer = await workbook.xlsx.writeBuffer();
-        res.send(buffer);
-    } catch (error) {
-        console.error(error);
-        res.status(500).send("Internal Server Error");
+            //we can create a obj {col1 col2 col3} for each service and then pass it to data
+            // merge header cell one by if use A1:C6 the only header available will be the first one
+            utils.reverseNestedService(data, serviços, local.tabela);
+            worksheet.addRows(data);
+            // Set response headers to indicate a downloadable Excel file
+            res.setHeader(
+                "Content-Type",
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            );
+            // Send the Excel file as a buffer to the client
+            const buffer = await workbook.xlsx.writeBuffer();
+            res.send(buffer);
+        } catch (error) {
+            console.error(error);
+            res.status(500).send("Internal Server Error");
+        }
     }
 });
 module.exports = router;
