@@ -2,6 +2,7 @@ const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
 const Serviço = require("../models/serviço");
 const Utility = require("../utils/utility");
+const { format } = require("date-fns");
 
 // Route Test
 exports.test = asyncHandler(async (req, res) => {
@@ -52,13 +53,20 @@ exports.novo = [
     body("produto").exists().withMessage("Produto não especificado"),
     asyncHandler(async (req, res) => {
         const err = validationResult(req);
-        const serviço = new Serviço({
+        const serviçoModel = {
             dentista: req.body.dentista,
             produto: req.body.produto,
             paciente: req.body.paciente,
             local: req.body.local,
             statusEntrega: req.body.statusEntrega,
-        });
+        };
+        if (req.body.dataRegistro) {
+            serviçoModel.dataRegistro = format(
+                new Date(req.body.dataRegistro),
+                "yyyy-MM-dd"
+            );
+        }
+        const serviço = new Serviço(serviçoModel);
         if (!err.isEmpty()) {
             const errors = {};
             err.errors.forEach((e) => {
@@ -115,6 +123,12 @@ exports.editar = [
         }
 
         const update = Utility.emptyFields(req.body, true);
+        if (req.body.dataRegistro) {
+            update.dataRegistro = format(
+                new Date(req.body.dataRegistro),
+                "yyyy-MM-dd"
+            );
+        }
         if (!err.isEmpty()) {
             const errors = {};
             err.errors.forEach((e) => {
