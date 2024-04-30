@@ -32,11 +32,7 @@ app.use(
 );
 app.use(passport.initialize());
 app.use(passport.session());
-app.use((req, res, next) => {
-    res.setHeader("Access-Control-Allow-Origin", "*");
-    // Add other CORS headers as needed
-    next();
-});
+
 app.use("/users", userRouter);
 // app.use("/api", passport.authenticate("jwt", { session: false }), apiRouter);
 app.use("/api", apiRouter);
