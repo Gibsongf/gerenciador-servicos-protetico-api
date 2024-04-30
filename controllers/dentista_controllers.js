@@ -50,12 +50,12 @@ exports.novo = [
         .withMessage("Número inválido ")
         .isLength({ min: 13 })
         .withMessage("Número incompleto"),
-    body("cpf")
-        .trim()
-        .escape()
-        .isNumeric()
-        .isLength({ max: 11, min: 11 })
-        .withMessage("O CPF deve ter 11 dígitos."),
+    // body("cpf")
+    //     .trim()
+    //     .escape()
+    //     .isNumeric()
+    //     .isLength({ max: 11, min: 11 })
+    //     .withMessage("O CPF deve ter 11 dígitos."),
     asyncHandler(async (req, res) => {
         const err = validationResult(req);
         if (!err.isEmpty()) {
@@ -95,12 +95,12 @@ exports.editar = [
         .withMessage("Número inválido ")
         .isLength({ min: 13 })
         .withMessage("Número incompleto"),
-    body("cpf")
-        .trim()
-        .escape()
-        .isNumeric()
-        .isLength({ max: 11, min: 11 })
-        .withMessage("O CPF deve ter 11 dígitos."),
+    // body("cpf")
+    //     .trim()
+    //     .escape()
+    //     .isNumeric()
+    //     .isLength({ max: 11, min: 11 })
+    //     .withMessage("O CPF deve ter 11 dígitos."),
     asyncHandler(async (req, res) => {
         const err = validationResult(req);
         const update = Utility.emptyFields(req.body);
