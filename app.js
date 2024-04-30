@@ -12,22 +12,31 @@ const apiRouter = require("./routes/api");
 const app = express();
 require("./mongoConfig");
 require("./passport");
+require("dotenv").config();
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
-
 app.use(cors());
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
-app.use(cors());
-app.use(session({ secret: "cats", resave: false, saveUninitialized: true }));
+app.use(
+    session({
+        secret: process.env.JwtKey,
+        resave: false,
+        saveUninitialized: true,
+    })
+);
 app.use(passport.initialize());
 app.use(passport.session());
-
+app.use((req, res, next) => {
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    // Add other CORS headers as needed
+    next();
+});
 app.use("/users", userRouter);
 // app.use("/api", passport.authenticate("jwt", { session: false }), apiRouter);
 app.use("/api", apiRouter);
