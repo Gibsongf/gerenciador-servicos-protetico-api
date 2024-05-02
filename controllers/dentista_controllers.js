@@ -119,7 +119,7 @@ exports.editar = [
                 }
             ).exec();
             await dentista.save();
-            res.status(200).json({ message: "Dentista updated", dentista });
+            res.status(200).json({ message: "Dentista modificado", dentista });
         }
     }),
 ];
@@ -134,7 +134,7 @@ exports.deletar = asyncHandler(async (req, res) => {
         return res.status(409).json({
             status: "error",
             message:
-                "Dentista cannot be deleted because there are associated Serviço",
+                "Dentista não pode ser deletado pois possui Serviço relacionados a ele",
         });
     } else {
         await Dentista.findByIdAndRemove(req.params.id).exec();
