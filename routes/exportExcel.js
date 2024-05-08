@@ -20,7 +20,8 @@ const col = (local, dentista) => {
                 "",
                 "Informações do Pedido",
                 "",
-                `${local.nome}, Dr.${utils.fullName(dentista)}`,
+                `Clinica: ${local.nome}`,
+                `Dr: ${utils.fullName(dentista)}`,
                 " ",
             ],
             key: "col1",
@@ -124,7 +125,7 @@ router.get("/:id/mes/:inicial/:final", async (req, res) => {
     } else {
         try {
             const data = [
-                { col1: "Cliente", col2: "Produto", col3: "Valor" },
+                { col1: "Paciente", col2: "Descrição", col3: "Valor" },
                 { col1: "", col2: "", col3: "" },
                 // Add your data from the database here
             ];

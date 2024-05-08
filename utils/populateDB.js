@@ -3,6 +3,7 @@ const {
     createLocal,
     createProduto,
     createServiço,
+    storeRealProducts,
 } = require("../utils/createData");
 const mongoose = require("mongoose");
 require("dotenv").config();
@@ -27,14 +28,15 @@ async function main() {
     for (let i = 0; i < 5; i++) {
         const local = await createLocal();
         await createDentista(local._id, dentistaArray);
-        await createProduto(produtoArray);
     }
-    console.log("local, dentista, produto saved");
+    await storeRealProducts(produtoArray);
+    // console.log(produtoArray);
+    // console.log("local, dentista, produto saved");
     let day = 1;
     let date = () => `2024-04-${day}`;
     for (let i = 0; i < 10; i++) {
         await createServiço(dentistaArray, produtoArray, date());
-        console.log(date());
+        // console.log(date());
         day++;
     }
     console.log("serviço saved");

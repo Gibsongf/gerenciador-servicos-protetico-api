@@ -5,12 +5,10 @@ const DentistaSchema = new Schema({
     nome: { type: String, require: true, minLength: 3 },
     sobrenome: { type: String },
     local: { type: Schema.Types.ObjectId, ref: "Local", require: true },
-    telefone: { type: String, maxLength: 14, minLength: 13 },
+    telefone: { type: String, maxLength: 14 },
     cpf: {
         type: String,
-        unique: true,
         maxLength: 11,
-        minLength: 11,
     },
 });
 

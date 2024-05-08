@@ -41,6 +41,7 @@ passport.use(
                 const userData = { id: user._id, username: user.username };
                 return cb(null, userData);
             } catch (err) {
+                console.log(err);
                 return cb(err);
             }
         }

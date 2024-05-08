@@ -66,7 +66,7 @@ exports.createServiço = async (dentistaArray, produtoArray, date) => {
         dataRegistro: formattedDate,
     });
     await serviço.save();
-    console.log(serviço);
+    // console.log(serviço);
     //console.log("Created Serviço!");
     return serviço;
 };
@@ -81,4 +81,66 @@ exports.createServiçoTest = async (dentista, produto) => {
     await serviço.save();
     //console.log("Created Serviço!");
     return serviço;
+};
+
+const realProductsReduzido = {
+    "AEB (SPLINT)": [105, 95],
+    "ARCO LINGUAL/BARRA PALATINA": [80, 80],
+    "BARRA BOTÃO": [95, 87],
+    "BOTÃO DE NANCE": [95, 87],
+    "BIMLER A": [255, 255],
+    "BIMLER B/C": [280, 280],
+    "BIONATOR BÁSICO/INVERTIDO/PROTETOR": [195, 195],
+    "CONTENÇÃO ACETATO(1 MM)": [85, 65],
+    "CONTENÇÃO CONTÍNUA (BEGG)": [104, 80],
+    "CONTENÇÃO FIXA (HIGIÊNICA/RETA)": [45, 40],
+    "CONTENÇÃO HAWLEY": [80, 65],
+    // "CARACTERIZAÇÃO (NOME, ADESIVO, BRILHO)": "A PARTIR DE 20",
+    "COBERTURA OCLUSAL": [10, 10],
+    "DISJUNTOR HYRAX/HAAS": [115, 100],
+    "DISJUNTOR HYRAX/HAAS COM GANCHO": [125, 115],
+    "DISJUNTOR MACNAMRA": [125, 115],
+    "DUPLICAÇÃO DE MODELO": [25, 20],
+    "EXPANSOR UNIVERSAL": [100, 90],
+    GRADE: [25, 20],
+    "GRADE FIXA SOLDADA BANDA": [85, 80],
+    KLAMT: [220, 220],
+    "MANTEDOR ESTÉTICO(1 DENTE)": [115, 90],
+    "MANTEDOR ESTÉTICO DENARI": [140, 140],
+    MOLA: [10, 10],
+    "MONTAGEM ARTICULADOR": [25, 10],
+    "PÊNDULO /PENDEX": [155, 155],
+    "PLACA RONCO E APNÉIA PLG": [455, 455],
+    "PLACA SILICONE (CLAREAMENTO)": [45, 45],
+    "PLACA SIMPLES": [220, 220],
+    "PLACA COMPOSTO": [240, 240],
+    "PLATÔ SOLDADO BANDA": [85, 80],
+    PLATÔ: [80, 75],
+    "PLACA BRUXISMO ACRÍLICA": [125, 100],
+    "SN1/2/3": [220, 220],
+    "SN4/5": [250, 250],
+    "REGULADOR DE FRANKELL": [280, 280],
+    "VAZAR GESSO": [25, 25],
+    "EXPANSOR BILATERAL": [22, 22],
+    "EXPANSOR UNILATERAL": [30, 30],
+    "EXPANSOR HYRAX": [45, 45],
+    EQUIPLAN: [20, 20],
+    "ESCUDO BIMLER": [20, 20],
+};
+
+exports.storeRealProducts = async (produtoArray) => {
+    const nomes = Object.keys(realProductsReduzido);
+    nomes.forEach(async (n) => {
+        const valorNormal = realProductsReduzido[n][0];
+        const valorReduzido = realProductsReduzido[n][1];
+
+        const produto = new Produto({
+            nome: n,
+            valor_normal: valorNormal,
+            valor_reduzido: valorReduzido,
+        });
+        produtoArray.push(produto);
+        // console.log(produtoArray);
+        await produto.save();
+    });
 };

@@ -41,6 +41,7 @@ exports.novo = [
         .notEmpty()
         .withMessage("Endereço tem que ser especificado"),
     body("telefone")
+        .optional({ checkFalsy: true })
         .trim()
         .escape()
         .isLength({ max: 14 })
@@ -48,8 +49,7 @@ exports.novo = [
         .isLength({ min: 13 })
         .withMessage("Número incompleto"),
     body("cep")
-        .notEmpty()
-        .withMessage("Cep tem que ser especificado")
+        .optional({ checkFalsy: true })
         .isPostalCode("BR")
         .withMessage("Cep Invalido."),
     asyncHandler(async (req, res) => {
@@ -86,6 +86,7 @@ exports.editar = [
         .notEmpty()
         .withMessage("Endereço tem que ser especificado"),
     body("telefone")
+        .optional({ checkFalsy: true })
         .trim()
         .escape()
         .isLength({ max: 14 })
@@ -93,8 +94,7 @@ exports.editar = [
         .isLength({ min: 13 })
         .withMessage("Número incompleto"),
     body("cep")
-        .notEmpty()
-        .withMessage("Cep tem que ser especificado")
+        .optional({ checkFalsy: true })
         .isPostalCode("BR")
         .withMessage("Cep Invalido."),
     asyncHandler(async (req, res) => {

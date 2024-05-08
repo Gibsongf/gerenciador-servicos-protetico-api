@@ -44,18 +44,20 @@ exports.novo = [
         .notEmpty()
         .withMessage("O Local não especificado"),
     body("telefone")
+        .optional({ checkFalsy: true })
         .trim()
         .escape()
         .isLength({ max: 14 })
         .withMessage("Número inválido ")
         .isLength({ min: 13 })
         .withMessage("Número incompleto"),
-    // body("cpf")
-    //     .trim()
-    //     .escape()
-    //     .isNumeric()
-    //     .isLength({ max: 11, min: 11 })
-    //     .withMessage("O CPF deve ter 11 dígitos."),
+    body("cpf")
+        .optional({ checkFalsy: true })
+        .trim()
+        .escape()
+        .isNumeric()
+        .isLength({ max: 11, min: 11 })
+        .withMessage("O CPF deve ter 11 dígitos."),
     asyncHandler(async (req, res) => {
         const err = validationResult(req);
         if (!err.isEmpty()) {
@@ -66,16 +68,10 @@ exports.novo = [
             res.status(400).json({ errors });
         } else {
             const local = await Local.findById(req.body.local).exec();
-            const dentista = new Dentista({
-                nome: req.body.nome, //require true
-                sobrenome: req.body.sobrenome,
-                local: local._id, //require true
-                telefone: req.body.telefone,
-                cpf: Number(req.body.cpf), //require true
-            });
-
+            const model = Utility.emptyFields(req.body);
+            model.local = local._id;
+            const dentista = new Dentista(model);
             await dentista.save();
-            // console.log("saved");
             res.status(200).json({ message: "Dentista saved", dentista });
         }
     }),
@@ -89,18 +85,20 @@ exports.editar = [
     body("sobrenome").trim(),
     body("local").trim().notEmpty().withMessage("O Local não especificado"),
     body("telefone")
+        .optional({ checkFalsy: true })
         .trim()
         .escape()
         .isLength({ max: 14 })
         .withMessage("Número inválido ")
         .isLength({ min: 13 })
         .withMessage("Número incompleto"),
-    // body("cpf")
-    //     .trim()
-    //     .escape()
-    //     .isNumeric()
-    //     .isLength({ max: 11, min: 11 })
-    //     .withMessage("O CPF deve ter 11 dígitos."),
+    body("cpf")
+        .optional({ checkFalsy: true })
+        .trim()
+        .escape()
+        .isNumeric()
+        .isLength({ max: 11, min: 11 })
+        .withMessage("O CPF deve ter 11 dígitos."),
     asyncHandler(async (req, res) => {
         const err = validationResult(req);
         const update = Utility.emptyFields(req.body);
@@ -118,7 +116,6 @@ exports.editar = [
                     new: true,
                 }
             ).exec();
-            await dentista.save();
             res.status(200).json({ message: "Dentista modificado", dentista });
         }
     }),
