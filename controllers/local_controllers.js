@@ -112,7 +112,6 @@ exports.editar = [
             const local = await Local.findByIdAndUpdate(req.params.id, update, {
                 new: true,
             }).exec();
-            await local.save();
             res.status(200).json({ message: "Local atualizado", local });
         }
     }),
