@@ -143,7 +143,6 @@ exports.editar = [
                     new: true,
                 }
             ).exec();
-            await serviço.save();
             res.status(200).json({ message: "Serviço Atualizado", serviço });
         }
     }),

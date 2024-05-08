@@ -105,7 +105,6 @@ exports.editar = [
                     new: true,
                 }
             ).exec();
-            await produto.save();
             res.status(200).json({ message: "Produto atualizado", produto });
         }
     }),
