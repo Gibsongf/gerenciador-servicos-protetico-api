@@ -1,11 +1,11 @@
 const express = require("express");
 const ExcelJS = require("exceljs");
 const Serviço = require("../models/serviço");
-const Dentista = require("../models/dentista");
+const Cliente = require("../models/cliente");
 const router = express.Router();
 const utils = require("../utils/utility");
 
-const col = (local, dentista) => {
+const col = (local, cliente) => {
     return [
         {
             header: [
@@ -20,8 +20,8 @@ const col = (local, dentista) => {
                 "",
                 "Informações do Pedido",
                 "",
-                `Clinica: ${local.nome}`,
-                `Dr: ${utils.fullName(dentista)}`,
+                // `Clinica: ${local.nome}`,
+                `${cliente.nome}`,
                 " ",
             ],
             key: "col1",
@@ -34,7 +34,7 @@ const col = (local, dentista) => {
 };
 const mergeC = (worksheet) => {
     // merge header cell one by if use A1:C6 the only header available will be the first one
-    Array.from(Array(12).keys()).forEach((n) => {
+    Array.from(Array(13).keys()).forEach((n) => {
         const location = `A${n + 1}:C${n + 1}`;
         worksheet.mergeCells(location);
         // use cell to apply style or something else
@@ -56,11 +56,11 @@ const valorType = (produto, local) => {
 router.get("/:id", async (req, res) => {
     try {
         const serviço = await Serviço.findById(req.params.id)
-            .populate("dentista")
+            .populate("cliente")
             .populate("produto")
             .populate("local")
             .exec();
-        const { produto, dentista, local } = serviço;
+        const { produto, cliente, local } = serviço;
 
         const data = [
             { col1: "Cliente", col2: "Produto", col3: "Valor" },
@@ -74,7 +74,7 @@ router.get("/:id", async (req, res) => {
         // merge header cells  A1:C6
         mergeC(worksheet);
 
-        worksheet.columns = col(local, dentista);
+        worksheet.columns = col(local, cliente);
 
         produto.forEach((p, index) => {
             if (index === 0) {
@@ -108,18 +108,17 @@ router.get("/:id/mes/:inicial/:final", async (req, res) => {
     // console.log(req.params);
 
     const { id, inicial, final } = req.params;
-    //setting for one dentist and his services in a date range
-    const [dentista, serviços] = await Promise.all([
-        Dentista.findById(id).populate("local").exec(),
+    //setting for one cliente and his services in a date range
+    const [cliente, serviços] = await Promise.all([
+        Cliente.findById(id).populate("local").exec(),
         Serviço.find({
-            dentista: id,
-            dataRegistro: { $gt: new Date(inicial), $lt: new Date(final) },
+            cliente: id,
+            dataRegistro: { $gte: new Date(inicial), $lte: new Date(final) },
         })
             .populate("produto")
             .exec(),
     ]);
-    const { local } = dentista;
-    // console.log(serviços);
+    const { local } = cliente;
     if (!serviços.length) {
         res.status(404).json({ error: "Nenhum serviço encontrado" });
     } else {
@@ -135,7 +134,7 @@ router.get("/:id/mes/:inicial/:final", async (req, res) => {
             const worksheet = workbook.addWorksheet("Sheet 1");
             mergeC(worksheet);
 
-            worksheet.columns = col(local, dentista);
+            worksheet.columns = col(local, cliente);
 
             //we can create a obj {col1 col2 col3} for each service and then pass it to data
             // merge header cell one by if use A1:C6 the only header available will be the first one

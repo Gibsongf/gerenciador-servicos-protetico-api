@@ -1,5 +1,5 @@
 const { faker } = require("@faker-js/faker/locale/pt_BR");
-const Dentista = require("../models/dentista");
+const Cliente = require("../models/cliente");
 const Serviço = require("../models/serviço");
 const Local = require("../models/local");
 const Produto = require("../models/produto");
@@ -12,18 +12,18 @@ const randomNumber = (array) => {
     const indx = Math.floor(Math.random() * array.length);
     return indx;
 };
-exports.createDentista = async (local_id, dentistaArray) => {
-    const dentista = new Dentista({
+exports.createCliente = async (local_id, clienteArray) => {
+    const cliente = new Cliente({
         nome: faker.person.firstName(),
-        sobrenome: faker.person.lastName(),
+        // sobrenome: faker.person.lastName(),
         local: local_id,
         telefone: String(faker.phone.number("#############")),
         cpf: String(faker.phone.number("###########")),
     });
-    await dentista.save();
-    dentistaArray.push(dentista);
+    await cliente.save();
+    clienteArray.push(cliente);
 
-    return dentista;
+    return cliente;
 };
 
 exports.createLocal = async () => {
@@ -51,17 +51,17 @@ exports.createProduto = async (produtoArray) => {
 
     return produto;
 };
-exports.createServiço = async (dentistaArray, produtoArray, date) => {
-    const dentista = dentistaArray[randomNumber(dentistaArray)];
+exports.createServiço = async (clienteArray, produtoArray, date) => {
+    const cliente = clienteArray[randomNumber(clienteArray)];
     const produto = produtoArray[randomNumber(produtoArray)];
     const produto2 = produtoArray[randomNumber(produtoArray)];
     const formattedDate = format(new Date(date), "yyyy-MM-dd");
     // console.log(formattedDate);
     const serviço = new Serviço({
-        dentista: dentista._id,
+        cliente: cliente._id,
         paciente: faker.person.fullName(),
         produto: [produto._id, produto2._id],
-        local: dentista.local._id,
+        local: cliente.local._id,
         statusEntrega: false,
         dataRegistro: formattedDate,
     });
@@ -70,12 +70,12 @@ exports.createServiço = async (dentistaArray, produtoArray, date) => {
     //console.log("Created Serviço!");
     return serviço;
 };
-exports.createServiçoTest = async (dentista, produto) => {
+exports.createServiçoTest = async (cliente, produto) => {
     const serviço = new Serviço({
-        dentista: dentista._id,
+        cliente: cliente._id,
         paciente: faker.person.fullName(),
         produto: [produto._id],
-        local: dentista.local._id,
+        local: cliente.local._id,
         statusEntrega: false,
     });
     await serviço.save();
@@ -83,7 +83,7 @@ exports.createServiçoTest = async (dentista, produto) => {
     return serviço;
 };
 
-const realProductsReduzido = {
+const realProducts = {
     "AEB (SPLINT)": [105, 95],
     "ARCO LINGUAL/BARRA PALATINA": [80, 80],
     "BARRA BOTÃO": [95, 87],
@@ -128,11 +128,11 @@ const realProductsReduzido = {
     "ESCUDO BIMLER": [20, 20],
 };
 
-exports.storeRealProducts = async (produtoArray) => {
-    const nomes = Object.keys(realProductsReduzido);
+exports.realProducts = async (produtoArray) => {
+    const nomes = Object.keys(realProducts);
     nomes.forEach(async (n) => {
-        const valorNormal = realProductsReduzido[n][0];
-        const valorReduzido = realProductsReduzido[n][1];
+        const valorNormal = realProducts[n][0];
+        const valorReduzido = realProducts[n][1];
 
         const produto = new Produto({
             nome: n,
@@ -144,3 +144,47 @@ exports.storeRealProducts = async (produtoArray) => {
         await produto.save();
     });
 };
+const realLocal = [
+    {
+        nome: "Instituto Kalil",
+        endereço: "Rua João Pessoa, 454, Centro, SBC",
+        tabela: "Reduzida",
+    },
+    {
+        nome: "Clínica Fernanda",
+        endereço: "Dois de outubro, 126, Santa Terezinha, SBC",
+        tabela: "Reduzida",
+    },
+    {
+        nome: "Independente",
+        endereço: "livre",
+        tabela: "Normal",
+    },
+];
+const localForCliente = {};
+
+exports.realLocal = async (localArray) => {
+    realLocal.forEach(async (info) => {
+        const local = new Local(info);
+        localArray.push(local);
+        localForCliente[local.nome] = local._id;
+        await local.save();
+    });
+};
+const realCliente = [
+    {
+        nome: "Fernanda Holanda",
+        tabela: "reduzida",
+        local: localForCliente["Clínica Fernanda"],
+    },
+    {
+        nome: "Camila Treviso",
+        tabela: "Normal",
+        local: localForCliente["Independente"],
+    },
+    {
+        nome: "Desiree Pellizzon",
+        tabela: "Normal",
+        local: localForCliente["Instituto kalil"],
+    },
+];

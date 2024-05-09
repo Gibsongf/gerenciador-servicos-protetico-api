@@ -13,35 +13,33 @@ beforeAll(async () => {
     await initServer();
     data = await populateTest();
 });
-describe("/get/ dentista", () => {
-    test("all dentistas", async () => {
-        const res = await request(app).get("/api/dentista/todos");
+describe("/get/ cliente", () => {
+    test("all cliente", async () => {
+        const res = await request(app).get("/api/cliente/todos");
         expect(res.headers["content-type"]).toEqual(
             "application/json; charset=utf-8"
         );
-        expect(res.body["all"][0].cpf).toEqual(data.dentista.cpf);
+        expect(res.body["all"][0].cpf).toEqual(data.cliente.cpf);
         expect(res.body["all"].length).toBe(1);
         expect(res.status).toEqual(200);
     });
-    test("one dentistas details", async () => {
-        const res = await request(app).get(
-            "/api/dentista/" + data.dentista._id
-        );
+    test("one cliente details", async () => {
+        const res = await request(app).get("/api/cliente/" + data.cliente._id);
         const keys = Object.keys(res.body);
         expect(res.headers["content-type"]).toEqual(
             "application/json; charset=utf-8"
         );
         expect(keys).toContain("serviços");
-        expect(keys).toContain("dentista");
+        expect(keys).toContain("cliente");
         expect(res.status).toEqual(200);
     });
 });
 
-describe("/post/ Dentista ", () => {
-    test("add a new Dentista to db", async () => {
+describe("/post/ cliente ", () => {
+    test("add a new cliente to db", async () => {
         const objectIdString = new ObjectId(data.local._id).toString();
         const res = await request(app)
-            .post("/api/dentista/novo")
+            .post("/api/cliente/novo")
             .type("form")
             .send({
                 nome: "Fake",
@@ -53,17 +51,17 @@ describe("/post/ Dentista ", () => {
         expect(res.headers["content-type"]).toEqual(
             "application/json; charset=utf-8"
         );
-        expect(res.body.message).toEqual("Dentista saved");
+        expect(res.body.message).toEqual("cliente saved");
         expect(res.status).toEqual(200);
     });
 });
-describe("/put/ Dentista ", () => {
-    test("modify a Dentista", async () => {
-        const { local, telefone, cpf } = data.dentista;
+describe("/put/ cliente ", () => {
+    test("modify a cliente", async () => {
+        const { local, telefone, cpf } = data.cliente;
         const objectIdString = new ObjectId(local._id).toString();
 
         const res = await request(app)
-            .put("/api/dentista/" + data.dentista._id + "/edit")
+            .put("/api/cliente/" + data.cliente._id + "/edit")
             .type("form")
             .send({
                 nome: "Novo Nome",
@@ -76,14 +74,14 @@ describe("/put/ Dentista ", () => {
         expect(res.headers["content-type"]).toEqual(
             "application/json; charset=utf-8"
         );
-        expect(res.body.dentista.sobrenome).toEqual("Updated");
+        expect(res.body.cliente.sobrenome).toEqual("Updated");
         expect(res.status).toEqual(200);
     });
 });
-describe("/delete/ Dentista", () => {
-    test("Cant delete Dentista if has associated Serviço in the db", async () => {
+describe("/delete/ cliente", () => {
+    test("Cant delete cliente if has associated Serviço in the db", async () => {
         const res = await request(app)
-            .delete("/api/dentista/" + data.dentista._id)
+            .delete("/api/cliente/" + data.cliente._id)
             .set("Accept", "application/json");
         expect(res.headers["content-type"]).toEqual(
             "application/json; charset=utf-8"

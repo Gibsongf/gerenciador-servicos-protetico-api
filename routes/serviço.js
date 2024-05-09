@@ -8,7 +8,7 @@ router.get("/todos", serviço_controllers.todos);
 // router.get("/todos/:mes/:id", serviço_controllers.detalhes);
 router.get("/todos/local/:id", serviço_controllers.detailsByLocal);
 
-router.get("/todos/dentista/:id", serviço_controllers.detailsByDentist);
+router.get("/todos/cliente/:id", serviço_controllers.detailsByClient);
 router.get("/:id", serviço_controllers.detalhes);
 
 // POST

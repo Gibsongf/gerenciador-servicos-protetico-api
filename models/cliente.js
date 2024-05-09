@@ -1,9 +1,8 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const DentistaSchema = new Schema({
+const ClienteSchema = new Schema({
     nome: { type: String, require: true, minLength: 3 },
-    sobrenome: { type: String },
     local: { type: Schema.Types.ObjectId, ref: "Local", require: true },
     telefone: { type: String, maxLength: 14 },
     cpf: {
@@ -12,4 +11,4 @@ const DentistaSchema = new Schema({
     },
 });
 
-module.exports = mongoose.model("Dentista", DentistaSchema);
+module.exports = mongoose.model("Cliente", ClienteSchema);

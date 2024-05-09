@@ -1,6 +1,6 @@
 const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
-const Dentista = require("../models/dentista");
+const Cliente = require("../models/cliente");
 const Local = require("../models/local");
 const Serviço = require("../models/serviço");
 const Utility = require("../utils/utility");
@@ -27,9 +27,9 @@ exports.detalhes = asyncHandler(async (req, res) => {
     if (!local) {
         res.status(404);
     }
-    const dentistas = await Dentista.find({ local: local._id }).exec();
+    const clientes = await Cliente.find({ local: local._id }).exec();
 
-    res.status(200).json({ local, dentistas });
+    res.status(200).json({ local, clientes });
 });
 
 // Create
@@ -120,16 +120,16 @@ exports.editar = [
 // Delete
 // Deletar um local existente
 exports.deletar = asyncHandler(async (req, res) => {
-    const [local, dentistWorksInfo] = await Promise.all([
+    const [local, clientInfo] = await Promise.all([
         Local.findById(req.params.id).exec(),
-        Dentista.find({ local: req.params.id }),
+        Cliente.find({ local: req.params.id }),
     ]);
-    if (dentistWorksInfo.length > 0) {
-        // If there are associated Dentista, handle the response accordingly
+    if (clientInfo.length > 0) {
+        // If there are associated Cliente, handle the response accordingly
         return res.status(409).json({
             status: "error",
             message:
-                "Local não pode ser deletado pois possui Dentista relacionados a ele",
+                "Local não pode ser deletado pois possui Cliente relacionados a ele",
         });
     } else {
         await Local.findByIdAndRemove(req.params.id).exec();

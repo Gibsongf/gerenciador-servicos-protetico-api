@@ -28,7 +28,7 @@ describe("/get/ local", () => {
             "application/json; charset=utf-8"
         );
         expect(keys).toContain("local");
-        expect(keys).toContain("dentistas");
+        expect(keys).toContain("cliente");
         expect(res.status).toEqual(200);
     });
 });
@@ -78,7 +78,7 @@ describe("/put/ Local ", () => {
 });
 
 describe("/delete/ Local", () => {
-    test("Cant delete Local if has associated Dentista in the db", async () => {
+    test("Cant delete Local if has associated cliente in the db", async () => {
         const res = await request(app)
             .delete("/api/local/" + data.local._id)
             .set("Accept", "application/json");

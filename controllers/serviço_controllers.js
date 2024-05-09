@@ -12,7 +12,7 @@ exports.test = asyncHandler(async (req, res) => {
 // Todos os serviços
 exports.todos = asyncHandler(async (req, res) => {
     const all = await Serviço.find()
-        .populate("dentista")
+        .populate("cliente")
         .populate("produto")
         .populate("local")
         .exec();
@@ -27,7 +27,7 @@ exports.todos = asyncHandler(async (req, res) => {
 // Detalhes de um serviço
 exports.detalhes = asyncHandler(async (req, res) => {
     const serviço = await Serviço.findById(req.params.id)
-        .populate("dentista")
+        .populate("cliente")
         .populate("produto")
         .populate("local")
         .exec();
@@ -43,18 +43,18 @@ exports.detalhes = asyncHandler(async (req, res) => {
 // Create
 // Adicionar um novo serviço
 exports.novo = [
-    body("dentista")
+    body("cliente")
         .notEmpty()
-        .withMessage("Dentista não especificado")
+        .withMessage("Cliente não especificado")
         .isMongoId()
-        .withMessage("Dentista não encontrado"),
+        .withMessage("Cliente não encontrado"),
     body("paciente").notEmpty().withMessage("Paciente não especificado"),
     body("local").notEmpty().withMessage("Local não especificado"),
     body("produto").exists().withMessage("Produto não especificado"),
     asyncHandler(async (req, res) => {
         const err = validationResult(req);
         const serviçoModel = {
-            dentista: req.body.dentista,
+            cliente: req.body.cliente,
             produto: req.body.produto,
             paciente: req.body.paciente,
             local: req.body.local,
@@ -81,7 +81,7 @@ exports.novo = [
 ];
 exports.detailsByLocal = asyncHandler(async (req, res) => {
     const serviço = await Serviço.find({ local: req.params.id })
-        .populate("dentista")
+        .populate("cliente")
         .populate("produto")
         .exec();
     if (!serviço) {
@@ -93,8 +93,8 @@ exports.detailsByLocal = asyncHandler(async (req, res) => {
         serviço,
     });
 });
-exports.detailsByDentist = asyncHandler(async (req, res) => {
-    const serviço = await Serviço.find({ dentista: req.params.id }).exec();
+exports.detailsByClient = asyncHandler(async (req, res) => {
+    const serviço = await Serviço.find({ cliente: req.params.id }).exec();
     if (!serviço) {
         res.status(404).json({
             message: "Serviço não foi encontrado",
@@ -108,7 +108,7 @@ exports.detailsByDentist = asyncHandler(async (req, res) => {
 // Modificar um serviço
 exports.editar = [
     body("local").isMongoId().withMessage("Local não encontrado"),
-    body("dentista").isMongoId().withMessage("Dentista não encontrado"),
+    body("cliente").isMongoId().withMessage("Cliente não encontrado"),
     body("paciente")
         .isLength({ min: 3 })
         .withMessage("Paciente não especificado"),

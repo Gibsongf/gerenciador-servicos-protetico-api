@@ -8,14 +8,14 @@ const initServer = require("../utils/mongoConfigTest");
 const { ObjectId } = require("mongodb");
 
 let data;
-let dentistaIdString;
+let clienteIdString;
 let produtoIdString;
 let localIdString;
 beforeAll(async () => {
     await initServer();
     data = await populateTest();
     produtoIdString = new ObjectId(data.produto._id).toString();
-    dentistaIdString = new ObjectId(data.dentista._id).toString();
+    clienteIdString = new ObjectId(data.cliente._id).toString();
     localIdString = new ObjectId(data.local._id).toString();
 });
 describe("/get/ Serviço", () => {
@@ -24,8 +24,8 @@ describe("/get/ Serviço", () => {
         expect(res.headers["content-type"]).toEqual(
             "application/json; charset=utf-8"
         );
-        // console.log(res.body["all"][0].dentista);
-        expect(res.body["all"][0].dentista._id).toEqual(dentistaIdString);
+        // console.log(res.body["all"][0].cliente);
+        expect(res.body["all"][0].cliente._id).toEqual(clienteIdString);
         expect(res.body["all"].length).toBe(1);
         expect(res.status).toEqual(200);
     });
@@ -35,7 +35,7 @@ describe("/get/ Serviço", () => {
         expect(res.headers["content-type"]).toEqual(
             "application/json; charset=utf-8"
         );
-        expect(keys).toContain("dentista");
+        expect(keys).toContain("cliente");
         expect(keys).toContain("produto");
         expect(res.status).toEqual(200);
     });
@@ -47,7 +47,7 @@ describe("/post/ Serviço ", () => {
             .post("/api/servico/novo")
             .type("form")
             .send({
-                dentista: dentistaIdString,
+                cliente: clienteIdString,
                 produto: produtoIdString,
                 local: localIdString,
                 paciente: "paciente nome",
@@ -67,7 +67,7 @@ describe("/put/ Serviço ", () => {
             .put("/api/servico/" + data.serviço._id + "/edit")
             .type("form")
             .send({
-                dentista: dentistaIdString,
+                cliente: clienteIdString,
                 produto: produtoIdString,
                 local: localIdString,
                 statusEntrega: true,

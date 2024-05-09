@@ -1,19 +1,16 @@
 const asyncHandler = require("express-async-handler");
 const { body, validationResult } = require("express-validator");
-const Dentista = require("../models/dentista");
+const Cliente = require("../models/cliente");
 const Local = require("../models/local");
 const Serviço = require("../models/serviço");
 const Utility = require("../utils/utility");
 // Route Test
 exports.test = asyncHandler(async (req, res) => {
-    res.json({ message: "Test Dentista" });
+    res.json({ message: "Test Cliente" });
 });
 
 exports.todos = asyncHandler(async (req, res) => {
-    const all = await Dentista.find()
-        .sort({ nome: 1 })
-        .populate("local")
-        .exec(); //.sort({ nome: 1 })
+    const all = await Cliente.find().sort({ nome: 1 }).populate("local").exec(); //.sort({ nome: 1 })
     if (!all) {
         res.sendStatus(404);
     }
@@ -23,22 +20,22 @@ exports.todos = asyncHandler(async (req, res) => {
 });
 
 exports.detalhes = asyncHandler(async (req, res) => {
-    const dentista = await Dentista.findById(req.params.id)
+    const cliente = await Cliente.findById(req.params.id)
         .populate("local")
         .exec();
-    const serviços = await Serviço.find({ dentista: dentista._id })
-        .populate("dentista")
+    const serviços = await Serviço.find({ cliente: cliente._id })
+        .populate("cliente")
         .populate("produto")
         .exec();
-    if (!dentista) {
+    if (!cliente) {
         res.sendStatus(404);
     }
-    res.status(200).json({ dentista, serviços });
+    res.status(200).json({ cliente, serviços });
 });
 // isPostalCode(locale: 'BR'): ValidationChain CEP ?
 exports.novo = [
     body("nome").trim().notEmpty().withMessage("O Nome não especificado"),
-    body("sobrenome").trim(),
+    // body("sobrenome").trim(),
     body("local") //isMongoId()
         .trim()
         .notEmpty()
@@ -70,9 +67,9 @@ exports.novo = [
             const local = await Local.findById(req.body.local).exec();
             const model = Utility.emptyFields(req.body);
             model.local = local._id;
-            const dentista = new Dentista(model);
-            await dentista.save();
-            res.status(200).json({ message: "Dentista saved", dentista });
+            const cliente = new Cliente(model);
+            await cliente.save();
+            res.status(200).json({ message: "Cliente salvo", cliente });
         }
     }),
 ];
@@ -82,7 +79,7 @@ exports.editar = [
         .trim()
         .isLength({ min: 3 })
         .withMessage("O Nome não especificado"),
-    body("sobrenome").trim(),
+    // body("sobrenome").trim(),
     body("local").trim().notEmpty().withMessage("O Local não especificado"),
     body("telefone")
         .optional({ checkFalsy: true })
@@ -109,35 +106,35 @@ exports.editar = [
             });
             res.status(400).json({ errors });
         } else {
-            const dentista = await Dentista.findByIdAndUpdate(
+            const cliente = await Cliente.findByIdAndUpdate(
                 req.params.id,
                 update,
                 {
                     new: true,
                 }
             ).exec();
-            res.status(200).json({ message: "Dentista modificado", dentista });
+            res.status(200).json({ message: "Cliente modificado", cliente });
         }
     }),
 ];
 
 exports.deletar = asyncHandler(async (req, res) => {
-    const [dentista, dentistServices] = await Promise.all([
-        Dentista.findById(req.params.id).exec(),
-        Serviço.find({ dentista: req.params.id }),
+    const [cliente, clienteServices] = await Promise.all([
+        Cliente.findById(req.params.id).exec(),
+        Serviço.find({ cliente: req.params.id }),
     ]);
-    if (dentistServices.length > 0) {
+    if (clienteServices.length > 0) {
         // If there are associated "Serviço", handle the response accordingly
         return res.status(409).json({
             status: "error",
             message:
-                "Dentista não pode ser deletado pois possui Serviço relacionados a ele",
+                "Cliente não pode ser deletado pois possui Serviço relacionados a ele",
         });
     } else {
-        await Dentista.findByIdAndRemove(req.params.id).exec();
+        await Cliente.findByIdAndRemove(req.params.id).exec();
         res.status(200).json({
             status: "success",
-            message: "Dentista deletado.",
+            message: "Cliente deletado.",
         });
     }
 });

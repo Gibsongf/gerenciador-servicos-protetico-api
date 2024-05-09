@@ -4,7 +4,7 @@ const { format } = require("date-fns");
 const Schema = mongoose.Schema;
 
 const ServiçoSchema = new Schema({
-    dentista: { type: Schema.Types.ObjectId, ref: "Dentista", require: true },
+    cliente: { type: Schema.Types.ObjectId, ref: "Cliente", require: true },
     local: { type: Schema.Types.ObjectId, ref: "Local", require: true },
     paciente: { type: String, require: true, minLength: 3 },
     produto: [{ type: Schema.Types.ObjectId, ref: "Produto" }],

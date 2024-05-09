@@ -1,18 +1,18 @@
 const {
-    createDentista,
+    createCliente,
     createLocal,
     createProduto,
     createServiçoTest,
 } = require("../utils/createData");
 
 async function populateTest() {
-    const dentistaArray = [];
+    const clienteArray = [];
     const produtoArray = [];
     const local = await createLocal();
-    const dentista = await createDentista(local._id, dentistaArray);
+    const cliente = await createCliente(local._id, clienteArray);
     const produto = await createProduto(produtoArray);
-    const serviço = await createServiçoTest(dentista, produto);
-    return { local, dentista, produto, serviço };
+    const serviço = await createServiçoTest(cliente, produto);
+    return { local, cliente, produto, serviço };
 }
 
 module.exports = populateTest;

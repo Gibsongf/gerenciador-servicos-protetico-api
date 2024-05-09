@@ -1,9 +1,9 @@
 const {
-    createDentista,
+    createCliente,
     createLocal,
     createProduto,
     createServiço,
-    storeRealProducts,
+    realProducts: storeRealProducts,
 } = require("../utils/createData");
 const mongoose = require("mongoose");
 require("dotenv").config();
@@ -11,7 +11,7 @@ require("dotenv").config();
 mongoose.set("strictQuery", false);
 
 async function main() {
-    const dentistaArray = [];
+    const clienteArray = [];
     const produtoArray = [];
     await mongoose.connect(mongoDB);
     const collections = mongoose.connection.collections;
@@ -27,15 +27,15 @@ async function main() {
 
     for (let i = 0; i < 5; i++) {
         const local = await createLocal();
-        await createDentista(local._id, dentistaArray);
+        await createCliente(local._id, clienteArray);
     }
     await storeRealProducts(produtoArray);
     // console.log(produtoArray);
-    // console.log("local, dentista, produto saved");
+    // console.log("local, cliente, produto saved");
     let day = 1;
     let date = () => `2024-04-${day}`;
     for (let i = 0; i < 10; i++) {
-        await createServiço(dentistaArray, produtoArray, date());
+        await createServiço(clienteArray, produtoArray, date());
         // console.log(date());
         day++;
     }
