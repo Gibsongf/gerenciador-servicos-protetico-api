@@ -14,7 +14,7 @@ const randomNumber = (array) => {
 };
 exports.createCliente = async (local_id, clienteArray) => {
     const cliente = new Cliente({
-        nome: faker.person.firstName(),
+        nome: faker.person.fullName(),
         // sobrenome: faker.person.lastName(),
         local: local_id,
         telefone: String(faker.phone.number("#############")),

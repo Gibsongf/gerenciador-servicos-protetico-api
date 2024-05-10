@@ -4,8 +4,9 @@ const Serviço = require("../models/serviço");
 const Cliente = require("../models/cliente");
 const router = express.Router();
 const utils = require("../utils/utility");
+const Local = require("../models/local");
 
-const col = (local, cliente) => {
+const preHeaders = (cliente) => {
     return [
         {
             header: [
@@ -35,7 +36,7 @@ const col = (local, cliente) => {
 const mergeC = (worksheet) => {
     // merge header cell one by if use A1:C6 the only header available will be the first one
     Array.from(Array(13).keys()).forEach((n) => {
-        const location = `A${n + 1}:C${n + 1}`;
+        const location = `A${n + 1}:D${n + 1}`;
         worksheet.mergeCells(location);
         // use cell to apply style or something else
         const cell = worksheet.getCell(location);
@@ -45,68 +46,80 @@ const mergeC = (worksheet) => {
         };
     });
 };
-const valorType = (produto, local) => {
-    if (local.tabela === "Reduzido") {
-        return `R$ ${produto.valor_reduzido}`;
-    }
-    if (local.tabela === "Normal") {
-        return `R$ ${produto.valor_normal}`;
-    }
+const applyCellAlignment = (rows, worksheet) => {
+    Array.from(Array(rows).keys()).forEach((n) => {
+        // use cell to apply style or something else
+        const cell = worksheet.getRow(n + 16);
+        cell.alignment = {
+            horizontal: "left",
+            vertical: "middle",
+        };
+    });
 };
-router.get("/:id", async (req, res) => {
-    try {
-        const serviço = await Serviço.findById(req.params.id)
-            .populate("cliente")
+router.get("/todos/:id/mes/:inicial/:final", async (req, res) => {
+    const { id, inicial, final } = req.params;
+
+    const [local, serviços] = await Promise.all([
+        Local.findById(id).exec(),
+        Serviço.find({
+            local: id,
+            dataRegistro: { $gte: new Date(inicial), $lte: new Date(final) },
+        })
+            .populate({
+                path: "cliente",
+                select: "nome -_id", //just the "cliente" name
+            })
             .populate("produto")
-            .populate("local")
-            .exec();
-        const { produto, cliente, local } = serviço;
+            .exec(),
+    ]);
+    if (!serviços.length) {
+        res.status(404).json({ error: "Nenhum serviço encontrado" });
+    } else {
+        try {
+            const data = [
+                {
+                    col1: "Cliente",
+                    col2: "Doutor",
+                    col3: "Descrição",
+                    col4: "Valor",
+                },
+                { col1: "", col2: "", col3: "", col4: "" },
+                // Add your data from the database here
+            ];
+            // Create a new Excel workbook
+            const workbook = new ExcelJS.Workbook();
+            const worksheet = workbook.addWorksheet("Sheet 1");
+            // merge header cells  A1:C6
+            let columns = preHeaders(local);
+            //replace 3 column to one for "Doutor" and set it width
+            columns[2].width = 30;
+            //add a 4 column for 'valor'
+            columns.push({ key: "col4", width: 15 });
+            // worksheet.columns = columns;
+            const rows = utils.localNestedService(data, serviços, local.tabela);
+            worksheet.columns = columns;
+            worksheet.addRows(data);
 
-        const data = [
-            { col1: "Cliente", col2: "Produto", col3: "Valor" },
-            { col1: "", col2: "", col3: "" },
-            // Add your data from the database here
-        ];
-        // Create a new Excel workbook
-        const workbook = new ExcelJS.Workbook();
+            //apply alignment to each line pos header
+            applyCellAlignment(rows, worksheet);
+            mergeC(worksheet);
+            // Set response headers to indicate a downloadable Excel file
+            res.setHeader(
+                "Content-Type",
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            );
 
-        const worksheet = workbook.addWorksheet("Sheet 1");
-        // merge header cells  A1:C6
-        mergeC(worksheet);
-
-        worksheet.columns = col(local, cliente);
-
-        produto.forEach((p, index) => {
-            if (index === 0) {
-                data.push({
-                    col1: serviço.paciente,
-                    col2: p.nome,
-                    col3: valorType(p, local),
-                });
-            } else {
-                data.push({ col2: p.nome, col3: valorType(p, local) });
-            }
-        });
-
-        worksheet.addRows(data);
-
-        // Set response headers to indicate a downloadable Excel file
-        res.setHeader(
-            "Content-Type",
-            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        );
-
-        // Send the Excel file as a buffer to the client
-        const buffer = await workbook.xlsx.writeBuffer();
-        res.send(buffer);
-    } catch (error) {
-        console.error(error);
-        res.status(500).send("Internal Server Error");
+            // Send the Excel file as a buffer to the client
+            const buffer = await workbook.xlsx.writeBuffer();
+            res.send(buffer);
+        } catch (error) {
+            console.error(error);
+            res.status(500).send(error);
+        }
     }
 });
 router.get("/:id/mes/:inicial/:final", async (req, res) => {
     // console.log(req.params);
-
     const { id, inicial, final } = req.params;
     //setting for one cliente and his services in a date range
     const [cliente, serviços] = await Promise.all([
@@ -132,14 +145,20 @@ router.get("/:id/mes/:inicial/:final", async (req, res) => {
             const workbook = new ExcelJS.Workbook();
 
             const worksheet = workbook.addWorksheet("Sheet 1");
+
+            worksheet.columns = preHeaders(cliente);
+            const rows = utils.dentistNestedService(
+                data,
+                serviços,
+                local.tabela
+            );
+
+            worksheet.addRows(data);
+            //apply alignment to each line pos header
+            applyCellAlignment(rows, worksheet);
+            // merge header cell one by if use A1:C6 the only header available will be the first one
             mergeC(worksheet);
 
-            worksheet.columns = col(local, cliente);
-
-            //we can create a obj {col1 col2 col3} for each service and then pass it to data
-            // merge header cell one by if use A1:C6 the only header available will be the first one
-            utils.reverseNestedService(data, serviços, local.tabela);
-            worksheet.addRows(data);
             // Set response headers to indicate a downloadable Excel file
             res.setHeader(
                 "Content-Type",

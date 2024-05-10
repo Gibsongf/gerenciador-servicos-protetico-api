@@ -36,20 +36,26 @@ exports.formatDate = (timestamp) => {
     return format_date;
 };
 
-exports.reverseNestedService = (data, serviços, tabela) => {
+exports.dentistNestedService = (data, serviços, tabela) => {
     let index = serviços.length - 1;
     let newPaciente = true;
     let valueType = tabela === "Normal" ? "valor_reduzido" : "valor_normal";
+    let rows = 0;
+    let total = 0;
     while (true) {
         let { produto, paciente } = serviços[index];
+        rows++;
+
         if (produto.length) {
             let lastItem = serviços[index].produto.pop();
             // here we use the key for the right value type
             const column = {
                 col1: "",
                 col2: lastItem.nome,
-                col3: "R$" + lastItem[valueType],
+                col3: lastItem[valueType],
             };
+            total += Number(lastItem[valueType]);
+
             //new paciente we save in first col
             if (newPaciente) {
                 column.col1 = paciente;
@@ -66,5 +72,60 @@ exports.reverseNestedService = (data, serviços, tabela) => {
         }
         if (index < 0) break;
     }
-    return;
+    data.push({
+        col1: "",
+        col2: "",
+        col3: "Total",
+        col4: total,
+    });
+    rows++;
+    return rows;
+};
+
+// could do both nested service in one but will keep like this
+exports.localNestedService = (data, serviços, tabela) => {
+    let index = serviços.length - 1;
+    let newPaciente = true;
+    let valueType = tabela === "Normal" ? "valor_reduzido" : "valor_normal";
+    let rows = 0;
+    let total = 0;
+    while (true) {
+        let { produto, paciente, cliente } = serviços[index];
+        rows++;
+
+        if (produto.length) {
+            let lastItem = serviços[index].produto.pop();
+            // here we use the key for the right value type
+            const column = {
+                col1: "",
+                col2: "",
+                col3: lastItem.nome,
+                col4: lastItem[valueType],
+            };
+            total += Number(lastItem[valueType]);
+            //new paciente we save in first col
+            if (newPaciente) {
+                column.col1 = paciente;
+                column.col2 = cliente.nome; //doutor
+                newPaciente = false;
+            }
+            data.push(column);
+        } else {
+            //jump one line when previous service is finished
+            const emptyLine = { col1: "", col2: "", col3: "", col4: "" };
+            data.push(emptyLine);
+            index--;
+            //move to next service and new paciente reset bool
+            newPaciente = true;
+        }
+        if (index < 0) break;
+    }
+    data.push({
+        col1: "",
+        col2: "",
+        col3: "Total",
+        col4: total,
+    });
+    rows++; //total value, line count
+    return rows;
 };
