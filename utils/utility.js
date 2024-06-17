@@ -39,9 +39,11 @@ exports.formatDate = (timestamp) => {
 exports.dentistNestedService = (data, serviços, tabela) => {
     let index = serviços.length - 1;
     let newPaciente = true;
-    let valueType = tabela === "Normal" ? "valor_reduzido" : "valor_normal";
+    let valueType = !tabela === "Normal" ? "valor_reduzido" : "valor_normal";
+    console.log(tabela, valueType);
     let rows = 0;
     let total = 0;
+    // token:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NDI2YWEyOWUzYWEzNGUxYzVmMDcxYiIsImlhdCI6MTcxNjg0Nzg0M30.jeA0eeKcX-e5hH1_p70-6nn0Tt2e_NQDl7JsTUQ9Fc8"
     while (true) {
         let { produto, paciente } = serviços[index];
         rows++;
@@ -84,7 +86,7 @@ exports.dentistNestedService = (data, serviços, tabela) => {
 exports.localNestedService = (data, serviços, tabela) => {
     let index = serviços.length - 1;
     let newPaciente = true;
-    let valueType = tabela === "Normal" ? "valor_reduzido" : "valor_normal";
+    let valueType = !tabela === "Normal" ? "valor_reduzido" : "valor_normal";
     let rows = 0;
     let total = 0;
     while (true) {
