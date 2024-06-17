@@ -37,13 +37,13 @@ exports.formatDate = (timestamp) => {
 };
 
 exports.dentistNestedService = (data, serviços, tabela) => {
+    tabela = tabela.toLowerCase();
     let index = serviços.length - 1;
     let newPaciente = true;
-    let valueType = !tabela === "Normal" ? "valor_reduzido" : "valor_normal";
-    console.log(tabela, valueType);
+    const valueTypeObj = { reduzido: "valor_reduzido", normal: "valor_normal" };
+    const valueType = valueTypeObj[tabela];
     let rows = 0;
     let total = 0;
-    // token:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY2NDI2YWEyOWUzYWEzNGUxYzVmMDcxYiIsImlhdCI6MTcxNjg0Nzg0M30.jeA0eeKcX-e5hH1_p70-6nn0Tt2e_NQDl7JsTUQ9Fc8"
     while (true) {
         let { produto, paciente } = serviços[index];
         rows++;
@@ -84,9 +84,11 @@ exports.dentistNestedService = (data, serviços, tabela) => {
 
 // could do both nested service in one but will keep like this
 exports.localNestedService = (data, serviços, tabela) => {
+    tabela = tabela.toLowerCase();
     let index = serviços.length - 1;
     let newPaciente = true;
-    let valueType = !tabela === "Normal" ? "valor_reduzido" : "valor_normal";
+    const valueTypeObj = { reduzido: "valor_reduzido", normal: "valor_normal" };
+    const valueType = valueTypeObj[tabela];
     let rows = 0;
     let total = 0;
     while (true) {

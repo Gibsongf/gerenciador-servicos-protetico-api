@@ -151,7 +151,6 @@ router.get("/:id/mes/:inicial/:final", async (req, res) => {
                 serviços,
                 local.tabela
             );
-
             worksheet.addRows(data);
             //apply alignment to each line pos header
             applyCellAlignment(rows, worksheet);
