@@ -119,7 +119,6 @@ router.get("/todos/:id/mes/:inicial/:final", async (req, res) => {
     }
 });
 router.get("/:id/mes/:inicial/:final", async (req, res) => {
-    // console.log(req.params);
     const { id, inicial, final } = req.params;
     //setting for one cliente and his services in a date range
     const [cliente, serviços] = await Promise.all([

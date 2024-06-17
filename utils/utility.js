@@ -45,7 +45,6 @@ exports.dentistNestedService = (data, serviços, tabela) => {
     while (true) {
         let { produto, paciente } = serviços[index];
         rows++;
-
         if (produto.length) {
             let lastItem = serviços[index].produto.pop();
             // here we use the key for the right value type
@@ -74,9 +73,8 @@ exports.dentistNestedService = (data, serviços, tabela) => {
     }
     data.push({
         col1: "",
-        col2: "",
-        col3: "Total",
-        col4: total,
+        col2: "Total",
+        col3: total,
     });
     rows++;
     return rows;

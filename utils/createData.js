@@ -148,17 +148,17 @@ const realLocal = [
     {
         nome: "Instituto Kalil",
         endereço: "Rua João Pessoa, 454, Centro, SBC",
-        tabela: "Reduzida",
+        // tabela: "Reduzida",
     },
     {
         nome: "Clínica Fernanda",
         endereço: "Dois de outubro, 126, Santa Terezinha, SBC",
-        tabela: "Reduzida",
+        // tabela: "Reduzida",
     },
     {
         nome: "Independente",
         endereço: "livre",
-        tabela: "Normal",
+        // tabela: "Normal",
     },
 ];
 const localForCliente = {};
@@ -167,7 +167,7 @@ exports.realLocal = async (localArray) => {
     realLocal.forEach(async (info) => {
         const local = new Local(info);
         localArray.push(local);
-        localForCliente[local.nome] = local._id;
+        // localForCliente[local.nome] = local._id;
         await local.save();
     });
 };
