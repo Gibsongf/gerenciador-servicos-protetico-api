@@ -4,12 +4,17 @@ const { format } = require("date-fns");
 const Schema = mongoose.Schema;
 
 const ServiçoSchema = new Schema({
-    cliente: { type: Schema.Types.ObjectId, ref: "Cliente", require: true },
-    local: { type: Schema.Types.ObjectId, ref: "Local", require: true },
-    paciente: { type: String, require: true, minLength: 3 },
-    produto: [{ type: Schema.Types.ObjectId, ref: "Produto" }],
-    dataRegistro: { type: Date, default: new Date() },
-    statusEntrega: { type: Boolean, require: true, default: false },
+  cliente: { type: Schema.Types.ObjectId, ref: "Cliente", required: true },
+  local: { type: Schema.Types.ObjectId, ref: "Local", required: true },
+  paciente: { type: String, required: true, minLength: 3 },
+  produtos: [
+    {
+      produto: { type: Schema.Types.ObjectId, ref: "Produto", required: true },
+      quantidade: { type: Number, min: 1 },
+    },
+  ],
+  dataRegistro: { type: Date, default: new Date() },
+  statusEntrega: { type: Boolean, required: true, default: false },
 });
 
 module.exports = mongoose.model("Serviço", ServiçoSchema);
