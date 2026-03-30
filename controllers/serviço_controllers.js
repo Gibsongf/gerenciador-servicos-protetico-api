@@ -17,7 +17,9 @@ exports.todos = asyncHandler(async (req, res) => {
     .populate("local")
     .exec();
   if (!all) {
-    res.sendStatus(404);
+    res.status(404).json({
+      message: "Nenhum Serviço foi encontrado",
+    });
   }
   res.status(200).json({
     all,
@@ -62,8 +64,7 @@ exports.novo = [
 
     const serviço = new Serviço(serviçoModel);
     if (!err.isEmpty()) {
-      const errors = err.errors.map((e) => e.msg).join(", ");
-      res.status(400).json({ message: errors });
+      res.status(400).json({ message: Utility.errorMsg(err) });
     } else {
       await serviço.save();
       res.status(200).json({ message: "Serviço Salvo", serviço });
@@ -116,11 +117,7 @@ exports.editar = [
     const update = Utility.emptyFields(req.body, true);
 
     if (!err.isEmpty()) {
-      const errors = {};
-      err.errors.forEach((e) => {
-        errors[e.path] = e.msg;
-      });
-      res.status(400).json({ errors });
+      res.status(400).json({ message: Utility.errorMsg(err) });
     } else {
       const serviço = await Serviço.findByIdAndUpdate(req.params.id, update, {
         new: true,

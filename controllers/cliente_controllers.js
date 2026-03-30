@@ -12,7 +12,7 @@ exports.test = asyncHandler(async (req, res) => {
 exports.todos = asyncHandler(async (req, res) => {
   const all = await Cliente.find().sort({ nome: 1 }).populate("local").exec();
   if (!all) {
-    res.sendStatus(404);
+    res.sendStatus(404).json({ message: "Nenhum Cliente encontrado" });
   }
   res.status(200).json({
     all,
@@ -28,7 +28,7 @@ exports.detalhes = asyncHandler(async (req, res) => {
     .populate("produto")
     .exec();
   if (!cliente) {
-    res.sendStatus(404);
+    res.sendStatus(404).json({ message: "Cliente não encontrado" });
   }
   res.status(200).json({ cliente, serviços });
 });
@@ -46,7 +46,7 @@ exports.novo = [
     .escape()
     .isLength({ max: 14 })
     .withMessage("Número inválido ")
-    .isLength({ min: 13 })
+    .isLength({ min: 9 })
     .withMessage("Número incompleto"),
   body("cpf")
     .optional({ checkFalsy: true })
@@ -58,11 +58,7 @@ exports.novo = [
   asyncHandler(async (req, res) => {
     const err = validationResult(req);
     if (!err.isEmpty()) {
-      const errors = {};
-      err.errors.forEach((e) => {
-        errors[e.path] = e.msg;
-      });
-      res.status(400).json({ errors });
+      res.status(400).json({ message: Utility.errorMsg(err) });
     } else {
       const local = await Local.findById(req.body.local).exec();
       const model = Utility.emptyFields(req.body);
@@ -87,7 +83,7 @@ exports.editar = [
     .escape()
     .isLength({ max: 14 })
     .withMessage("Número inválido ")
-    .isLength({ min: 13 })
+    .isLength({ min: 9 })
     .withMessage("Número incompleto"),
   body("cpf")
     .optional({ checkFalsy: true })
@@ -100,11 +96,7 @@ exports.editar = [
     const err = validationResult(req);
     const update = Utility.emptyFields(req.body);
     if (!err.isEmpty()) {
-      const errors = {};
-      err.errors.forEach((e) => {
-        errors[e.path] = e.msg;
-      });
-      res.status(400).json({ errors });
+      res.status(400).json({ message: Utility.errorMsg(err) });
     } else {
       const cliente = await Cliente.findByIdAndUpdate(req.params.id, update, {
         new: true,
