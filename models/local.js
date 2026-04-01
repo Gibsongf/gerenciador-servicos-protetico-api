@@ -12,5 +12,16 @@ const LocalSchema = new Schema({
     default: "Normal",
   },
 });
-
+LocalSchema.virtual("clientes", {
+  ref: "Cliente",
+  localField: "_id",
+  foreignField: "local",
+});
+LocalSchema.virtual("serviços", {
+  ref: "Serviço",
+  localField: "_id",
+  foreignField: "local",
+});
+LocalSchema.set("toJSON", { virtuals: true });
+LocalSchema.set("toObject", { virtuals: true });
 module.exports = mongoose.model("Local", LocalSchema);

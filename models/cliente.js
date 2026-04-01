@@ -10,5 +10,12 @@ const ClienteSchema = new Schema({
     maxLength: 11,
   },
 });
+ClienteSchema.virtual("serviços", {
+  ref: "Serviço",
+  localField: "_id",
+  foreignField: "cliente",
+});
 
+ClienteSchema.set("toJSON", { virtuals: true });
+ClienteSchema.set("toObject", { virtuals: true });
 module.exports = mongoose.model("Cliente", ClienteSchema);

@@ -10,10 +10,15 @@ exports.test = asyncHandler(async (req, res) => {
 });
 
 exports.todos = asyncHandler(async (req, res) => {
-  const all = await Cliente.find().sort({ nome: 1 }).populate("local").exec();
-  if (!all) {
+  const all = await Cliente.find()
+    .sort({ nome: 1 })
+    .populate("local")
+    .populate("serviços")
+    .exec();
+  if (all.length === 0) {
     res.sendStatus(404).json({ message: "Nenhum Cliente encontrado" });
   }
+
   res.status(200).json({
     all,
   });
@@ -93,6 +98,8 @@ exports.editar = [
     .isLength({ max: 11, min: 11 })
     .withMessage("O CPF deve ter 11 dígitos."),
   asyncHandler(async (req, res) => {
+    // when local changes, must change all services that are vinculated to this cliente
+    // to the new local
     const err = validationResult(req);
     const update = Utility.emptyFields(req.body);
     if (!err.isEmpty()) {
