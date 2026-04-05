@@ -11,7 +11,7 @@ exports.test = asyncHandler(async (req, res) => {
 // Read
 // Todos os serviços
 exports.todos = asyncHandler(async (req, res) => {
-  const all = await Serviço.find()
+  const all = await Serviço.find({ user: req.user.id })
     .populate("cliente")
     .populate("produtos.produto")
     .populate("local")
@@ -21,6 +21,7 @@ exports.todos = asyncHandler(async (req, res) => {
       message: "Nenhum Serviço foi encontrado",
     });
   }
+
   res.status(200).json({
     all,
   });
@@ -60,6 +61,7 @@ exports.novo = [
       paciente: req.body.paciente,
       local: req.body.local,
       statusEntrega: req.body.statusEntrega,
+      user: req.user.id,
     };
 
     const serviço = new Serviço(serviçoModel);

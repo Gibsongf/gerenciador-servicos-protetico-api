@@ -9,6 +9,7 @@ const ClienteSchema = new Schema({
     type: String,
     maxLength: 11,
   },
+  user: { type: Schema.Types.ObjectId, ref: "User", required: true },
 });
 ClienteSchema.virtual("serviços", {
   ref: "Serviço",

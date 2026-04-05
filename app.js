@@ -33,7 +33,7 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use("/users", userRouter);
+app.use("/user", userRouter);
 app.use("/api", passport.authenticate("jwt", { session: false }), apiRouter);
 // app.use("/api", apiRouter);
 

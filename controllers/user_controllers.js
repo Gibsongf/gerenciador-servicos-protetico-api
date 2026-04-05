@@ -54,3 +54,56 @@ exports.login = function (req, res) {
     });
   })(req, res);
 };
+exports.get = asyncHandler(async (req, res) => {
+  try {
+    const userId = req.user._id || req.user.id;
+
+    const user = await User.findById(userId);
+
+    if (user.length === 0) {
+      return res.status(404).json({
+        message: "Nenhum Usuario encontrado",
+      });
+    }
+    res.status(200).json(user);
+  } catch (err) {
+    console.log(err);
+    res.sendStatus(400);
+  }
+});
+exports.validate = function (req, res) {
+  res.status(200).json({
+    valid: true,
+    user: req.user,
+  });
+};
+exports.edit = [
+  body("username")
+    .notEmpty()
+    .withMessage("Usuário deve ser especificado")
+    .isLength({ min: 3 })
+    .withMessage("Usuário muito curto")
+    .isLength({ max: 15 })
+    .withMessage("Usuário muito grande"),
+  body("password")
+    .notEmpty()
+    .withMessage("Senha deve ser especificado")
+    .isLength({ min: 3 })
+    .withMessage("Senha muito curta"),
+  asyncHandler(async (req, res) => {
+    res.status(400).json({ message: Utility.errorMsg(err) });
+    const err = validationResult(req);
+
+    // const user = new User({
+    //   username: req.body.username,
+    //   password: req.body.password,
+    // });
+
+    // if (!err.isEmpty()) {
+    //   res.status(400).json({ message: Utility.errorMsg(err) });
+    // } else {
+    //   await user.save();
+    //   res.json({ message: "User register completed", user });
+    // }
+  }),
+];

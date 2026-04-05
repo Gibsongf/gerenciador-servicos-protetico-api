@@ -10,7 +10,7 @@ exports.test = asyncHandler(async (req, res) => {
 });
 
 exports.todos = asyncHandler(async (req, res) => {
-  const all = await Cliente.find()
+  const all = await Cliente.find({ user: req.user.id })
     .sort({ nome: 1 })
     .populate("local")
     .populate("serviços")
@@ -32,7 +32,7 @@ exports.detalhes = asyncHandler(async (req, res) => {
     .populate("cliente")
     .populate("produto")
     .exec();
-  if (!cliente) {
+  if (cliente.length === 0) {
     res.sendStatus(404).json({ message: "Cliente não encontrado" });
   }
   res.status(200).json({ cliente, serviços });
@@ -68,6 +68,7 @@ exports.novo = [
       const local = await Local.findById(req.body.local).exec();
       const model = Utility.emptyFields(req.body);
       model.local = local._id;
+      model.user = req.user.id;
       const cliente = new Cliente(model);
       await cliente.save();
       res.status(200).json({ message: "Cliente salvo", cliente });
@@ -100,16 +101,23 @@ exports.editar = [
   asyncHandler(async (req, res) => {
     // when local changes, must change all services that are vinculated to this cliente
     // to the new local
+    let cliente = await Cliente.findById(req.params.id).exec();
     const err = validationResult(req);
     const update = Utility.emptyFields(req.body);
-    if (!err.isEmpty()) {
-      res.status(400).json({ message: Utility.errorMsg(err) });
-    } else {
-      const cliente = await Cliente.findByIdAndUpdate(req.params.id, update, {
-        new: true,
-      }).exec();
-      res.status(200).json({ message: "Cliente modificado", cliente });
-    }
+    if (String(cliente.local) !== update.local)
+      if (!err.isEmpty()) {
+        res.status(400).json({ message: Utility.errorMsg(err) });
+      } else {
+        if (String(cliente.local) !== update.local) {
+          const serviço = await Serviço.find({ cliente: cliente._id })
+            .updateMany({ local: update.local })
+            .exec();
+        }
+        cliente = await Cliente.findByIdAndUpdate(req.params.id, update, {
+          new: true,
+        }).exec();
+        res.status(200).json({ message: "Cliente modificado", cliente });
+      }
   }),
 ];
 

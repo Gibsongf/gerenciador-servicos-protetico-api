@@ -13,12 +13,12 @@ exports.test = asyncHandler(async (req, res) => {
 // Read
 // Todos os locais
 exports.todos = asyncHandler(async (req, res) => {
-  const all = await Local.find()
+  const all = await Local.find({ user: req.user.id })
     .populate("clientes")
     .populate("serviços")
     .sort({ nome: 1 })
     .exec();
-  if (!all) {
+  if (all.length === 0) {
     res.sendStatus(404).json({ message: "Nenhum Local encontrado" });
   }
   res.status(200).json({

@@ -11,6 +11,7 @@ const LocalSchema = new Schema({
     enum: ["Normal", "Reduzido"],
     default: "Normal",
   },
+  user: { type: Schema.Types.ObjectId, ref: "User", required: true },
 });
 LocalSchema.virtual("clientes", {
   ref: "Cliente",

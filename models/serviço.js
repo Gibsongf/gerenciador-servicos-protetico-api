@@ -15,6 +15,7 @@ const ServiçoSchema = new Schema({
   ],
   dataRegistro: { type: Date, default: new Date() },
   statusEntrega: { type: Boolean, required: true, default: false },
+  user: { type: Schema.Types.ObjectId, ref: "User", required: true },
 });
 
 module.exports = mongoose.model("Serviço", ServiçoSchema);

@@ -12,7 +12,9 @@ exports.test = asyncHandler(async (req, res) => {
 // Read
 // Todos os produtos
 exports.todos = asyncHandler(async (req, res) => {
-  const all = await Produto.find().sort({ nome: 1 }).exec();
+  const all = await Produto.find({ user: req.user.id })
+    .sort({ nome: 1 })
+    .exec();
   if (!all) {
     res.sendStatus(404).json({ message: "Nenhum Produto foi encontrado" });
   }
@@ -44,12 +46,14 @@ exports.novo = [
     const err = validationResult(req);
     const hasIt = await Produto.findOne({
       nome: req.body.nome,
+      user: req.user.id,
     });
 
     const produto = new Produto({
       nome: req.body.nome, //require true
       valor_normal: req.body.valor_normal,
       valor_reduzido: req.body.valor_reduzido,
+      user: req.user.id,
     });
 
     if (hasIt) {
