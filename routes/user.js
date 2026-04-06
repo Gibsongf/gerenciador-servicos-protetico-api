@@ -17,7 +17,7 @@ function saltPassword(req, res, next) {
 
 router.post("/register", saltPassword, user_controllers.register);
 router.post("/login", user_controllers.login);
-router.post("/edit", user_controllers.edit);
+router.put("/edit/:id", user_controllers.edit);
 router.get(
   "/",
   passport.authenticate("jwt", { session: false }),

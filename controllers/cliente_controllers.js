@@ -104,20 +104,19 @@ exports.editar = [
     let cliente = await Cliente.findById(req.params.id).exec();
     const err = validationResult(req);
     const update = Utility.emptyFields(req.body);
-    if (String(cliente.local) !== update.local)
-      if (!err.isEmpty()) {
-        res.status(400).json({ message: Utility.errorMsg(err) });
-      } else {
-        if (String(cliente.local) !== update.local) {
-          const serviço = await Serviço.find({ cliente: cliente._id })
-            .updateMany({ local: update.local })
-            .exec();
-        }
-        cliente = await Cliente.findByIdAndUpdate(req.params.id, update, {
-          new: true,
-        }).exec();
-        res.status(200).json({ message: "Cliente modificado", cliente });
+    if (!err.isEmpty()) {
+      res.status(400).json({ message: Utility.errorMsg(err) });
+    } else {
+      if (String(cliente.local) !== update.local) {
+        const serviço = await Serviço.find({ cliente: cliente._id })
+          .updateMany({ local: update.local })
+          .exec();
       }
+      cliente = await Cliente.findByIdAndUpdate(req.params.id, update, {
+        new: true,
+      }).exec();
+      res.status(200).json({ message: "Cliente modificado", cliente });
+    }
   }),
 ];
 

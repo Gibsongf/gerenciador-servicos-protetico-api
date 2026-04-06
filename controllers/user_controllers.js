@@ -3,6 +3,7 @@ const { body, validationResult } = require("express-validator");
 const User = require("../models/user");
 const passport = require("passport");
 const jwt = require("jsonwebtoken");
+const Utility = require("../utils/utility");
 
 exports.register = [
   body("username")
@@ -37,8 +38,9 @@ exports.register = [
 exports.login = function (req, res) {
   passport.authenticate("local", (err, user, info) => {
     if (err || !user) {
+      console.log(err, info.message);
       return res.status(400).json({
-        message: "Something is not right",
+        message: info.message,
         user: user,
       });
     }
@@ -50,7 +52,7 @@ exports.login = function (req, res) {
         { id: user._id, user_name: user.user_name },
         process.env.JwtKey,
       );
-      return res.json({ token: token });
+      return res.json({ token: token, user: true });
     });
   })(req, res);
 };
@@ -67,7 +69,6 @@ exports.get = asyncHandler(async (req, res) => {
     }
     res.status(200).json(user);
   } catch (err) {
-    console.log(err);
     res.sendStatus(400);
   }
 });
@@ -85,25 +86,24 @@ exports.edit = [
     .withMessage("Usuário muito curto")
     .isLength({ max: 15 })
     .withMessage("Usuário muito grande"),
-  body("password")
-    .notEmpty()
-    .withMessage("Senha deve ser especificado")
-    .isLength({ min: 3 })
-    .withMessage("Senha muito curta"),
+  body("telefone")
+    .optional({ checkFalsy: true })
+    .trim()
+    .escape()
+    .isLength({ max: 14 })
+    .withMessage("Número inválido ")
+    .isLength({ min: 9 })
+    .withMessage("Número incompleto"),
   asyncHandler(async (req, res) => {
-    res.status(400).json({ message: Utility.errorMsg(err) });
     const err = validationResult(req);
-
-    // const user = new User({
-    //   username: req.body.username,
-    //   password: req.body.password,
-    // });
-
-    // if (!err.isEmpty()) {
-    //   res.status(400).json({ message: Utility.errorMsg(err) });
-    // } else {
-    //   await user.save();
-    //   res.json({ message: "User register completed", user });
-    // }
+    const update = Utility.emptyFields(req.body);
+    if (!err.isEmpty()) {
+      res.status(400).json({ message: Utility.errorMsg(err) });
+    } else {
+      const user = await User.findByIdAndUpdate(req.params.id, update, {
+        new: true,
+      }).exec();
+      res.status(200).json({ message: "User atualizado", user });
+    }
   }),
 ];
