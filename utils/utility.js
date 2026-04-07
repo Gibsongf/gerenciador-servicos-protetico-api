@@ -1,22 +1,3 @@
-// const mongoose = require("mongoose");
-// mongoose.set("strictQuery", false);
-
-// to remove new ObjectId from a mongodb object
-// const { ObjectId } = require("mongodb");
-// const objectIdString = new ObjectId().toHexString(data.cliente._id);
-// exports.fullName = (cliente) => {
-//     // To avoid errors in cases where an author does not have either a family name or first name
-//     // We want to make sure we handle the exception by returning an empty string for that case
-//     let fullName = "";
-//     if (cliente.nome && cliente.sobrenome) {
-//         fullName = `${cliente.nome} ${cliente.sobrenome}`;
-//     }
-//     if (!cliente.nome || !cliente.sobrenome) {
-//         fullName = "";
-//     }
-//     return fullName;
-// };
-
 exports.errorMsg = (err) => {
   const errors = [];
   err.errors.forEach((e) => {
@@ -101,29 +82,40 @@ exports.localNestedService = (data, serviços, tabela) => {
   let rows = 0;
   let total = 0;
   while (true) {
-    let { produto, paciente, cliente } = serviços[index];
+    let { produtos, paciente, cliente } = serviços[index];
     rows++;
 
-    if (produto.length) {
-      let lastItem = serviços[index].produto.pop();
+    if (produtos.length) {
+      let lastItem = serviços[index].produtos.pop();
+      const totalProduto =
+        Number(lastItem.produto[valueType]) * Number(lastItem.quantidade);
       // here we use the key for the right value type
       const column = {
         col1: "",
         col2: "",
-        col3: lastItem.nome,
-        col4: lastItem[valueType],
+        col3: lastItem.produto.nome + ` (x${lastItem.quantidade})`,
+        col4: lastItem.produto[valueType].toFixed(2),
+        col5: totalProduto.toFixed(2),
       };
-      total += Number(lastItem[valueType]);
+      total += totalProduto;
       //new paciente we save in first col
       if (newPaciente) {
         column.col1 = paciente;
         column.col2 = cliente.nome; //doutor
+        column.col6 = serviços[index].dataRegistro;
         newPaciente = false;
       }
       data.push(column);
     } else {
       //jump one line when previous service is finished
-      const emptyLine = { col1: "", col2: "", col3: "", col4: "" };
+      const emptyLine = {
+        col1: "",
+        col2: "",
+        col3: "",
+        col4: "",
+        col5: "",
+        col6: "",
+      };
       data.push(emptyLine);
       index--;
       //move to next service and new paciente reset bool
@@ -134,8 +126,8 @@ exports.localNestedService = (data, serviços, tabela) => {
   data.push({
     col1: "",
     col2: "",
-    col3: "Total",
-    col4: total,
+    col4: "Total",
+    col5: total.toFixed(2),
   });
   rows++; //total value, line count
   return rows;

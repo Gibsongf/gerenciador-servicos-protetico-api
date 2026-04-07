@@ -76,7 +76,7 @@ exports.novo = [
 exports.detailsByLocal = asyncHandler(async (req, res) => {
   const serviço = await Serviço.find({ local: req.params.id })
     .populate("cliente")
-    .populate("produto")
+    .populate("produtos")
     .exec();
   if (!serviço) {
     res.status(404).json({

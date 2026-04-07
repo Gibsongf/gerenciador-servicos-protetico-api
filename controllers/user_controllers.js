@@ -38,7 +38,6 @@ exports.register = [
 exports.login = function (req, res) {
   passport.authenticate("local", (err, user, info) => {
     if (err || !user) {
-      console.log(err, info.message);
       return res.status(400).json({
         message: info.message,
         user: user,

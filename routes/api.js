@@ -16,5 +16,5 @@ router.use("/servico", require("./serviço"));
 router.use("/produto", require("./produto"));
 router.use("/local", require("./local"));
 router.use("/cliente", require("./cliente"));
-// router.use("/export", require("./exportExcel"));
+router.use("/exportar", require("./exportExcel"));
 module.exports = router;

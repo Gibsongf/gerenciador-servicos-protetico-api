@@ -84,7 +84,6 @@ exports.editar = [
     const err = validationResult(req);
     const update = Utility.emptyFields(req.body, true);
     //'local' need a id to be able to update, need to return id
-    // console.log(req.body, "body");
     if (!err.isEmpty()) {
       res.status(400).json({ message: Utility.errorMsg(err) });
     } else {

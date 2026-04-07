@@ -2,22 +2,24 @@ const express = require("express");
 const ExcelJS = require("exceljs");
 const Serviço = require("../models/serviço");
 const Cliente = require("../models/cliente");
+const User = require("../models/user");
+
 const router = express.Router();
 const utils = require("../utils/utility");
 const Local = require("../models/local");
 
-const preHeaders = (cliente) => {
+const preHeaders = (cliente, user, local) => {
   return [
     {
       header: [
-        "DG Laboratório",
+        user.labName && user.labName,
         "",
-        "CROTPD 11054",
+        `CROTPD ${user.crotpd}`,
         "",
-        "Tec. Resp.: Diana Gomes Silva",
+        user.fullName ? `Tec. Resp.: ${user.fullName}` : "",
         "",
-        "Tel: (11) 96970-5611 (whatsapp)",
-        "Instagram: @dglaboratório",
+        user.telefone ? `Tel: ${user.telefone} (whatsapp)` : "",
+        user.instagram ? `Instagram: ${user.instagram}` : "",
         "",
         "Informações do Pedido",
         "",
@@ -56,23 +58,28 @@ const applyCellAlignment = (rows, worksheet) => {
     };
   });
 };
-router.get("/todos/:id/mes/:inicial/:final", async (req, res) => {
-  const { id, inicial, final } = req.params;
+router.get("/", async (req, res) => {
+  const { cliente, local, startDate, endDate } = req.query;
 
-  const [local, serviços] = await Promise.all([
-    Local.findById(id).exec(),
+  const [[clienteData], serviçosData, userData] = await Promise.all([
+    Cliente.find({ _id: cliente, user: req.user.id }).populate("local").exec(),
     Serviço.find({
-      local: id,
-      dataRegistro: { $gte: new Date(inicial), $lte: new Date(final) },
+      local: local,
+      user: req.user.id,
+      cliente: cliente,
+      dataRegistro: { $gte: new Date(startDate), $lte: new Date(endDate) },
     })
       .populate({
         path: "cliente",
         select: "nome -_id", //just the "cliente" name
       })
-      .populate("produto")
+      .populate("produtos.produto")
       .exec(),
+    User.findById(req.user.id).exec(),
   ]);
-  if (!serviços.length) {
+
+  // res.send({ clienteData, serviçosData, userData }).status(200);
+  if (!serviçosData.length) {
     res.status(404).json({ error: "Nenhum serviço encontrado" });
   } else {
     try {
@@ -81,22 +88,31 @@ router.get("/todos/:id/mes/:inicial/:final", async (req, res) => {
           col1: "Cliente",
           col2: "Doutor",
           col3: "Descrição",
-          col4: "Valor",
+          col4: "Valor Unidade",
+          col5: "Valor Total",
+          col6: "Data de Registro",
         },
-        { col1: "", col2: "", col3: "", col4: "" },
+        { col1: "", col2: "", col3: "", col4: "", col5: "", col6: "" },
         // Add your data from the database here
       ];
       // Create a new Excel workbook
       const workbook = new ExcelJS.Workbook();
       const worksheet = workbook.addWorksheet("Sheet 1");
       // merge header cells  A1:C6
-      let columns = preHeaders(local);
+      let columns = preHeaders(clienteData, userData, clienteData.local);
       //replace 3 column to one for "Doutor" and set it width
-      columns[2].width = 30;
+      columns[2].width = 40;
       //add a 4 column for 'valor'
       columns.push({ key: "col4", width: 15 });
+      columns.push({ key: "col5", width: 15 });
+      columns.push({ key: "col6", width: 15 });
+
       // worksheet.columns = columns;
-      const rows = utils.localNestedService(data, serviços, local.tabela);
+      const rows = utils.localNestedService(
+        data,
+        serviçosData,
+        clienteData.local.tabela,
+      );
       worksheet.columns = columns;
       worksheet.addRows(data);
 
@@ -113,7 +129,6 @@ router.get("/todos/:id/mes/:inicial/:final", async (req, res) => {
       const buffer = await workbook.xlsx.writeBuffer();
       res.send(buffer);
     } catch (error) {
-      console.error(error);
       res.status(500).send(error);
     }
   }
@@ -131,40 +146,41 @@ router.get("/:id/mes/:inicial/:final", async (req, res) => {
       .exec(),
   ]);
   const { local } = cliente;
-  if (!serviços.length) {
-    res.status(404).json({ error: "Nenhum serviço encontrado" });
-  } else {
-    try {
-      const data = [
-        { col1: "Paciente", col2: "Descrição", col3: "Valor" },
-        { col1: "", col2: "", col3: "" },
-        // Add your data from the database here
-      ];
-      // Create a new Excel workbook
-      const workbook = new ExcelJS.Workbook();
+  res.status(200);
+  // if (!serviços.length) {
+  //   res.status(404).json({ error: "Nenhum serviço encontrado" });
+  // } else {
+  //   try {
+  //     const data = [
+  //       { col1: "Paciente", col2: "Descrição", col3: "Valor" },
+  //       { col1: "", col2: "", col3: "" },
+  //       // Add your data from the database here
+  //     ];
+  //     // Create a new Excel workbook
+  //     const workbook = new ExcelJS.Workbook();
 
-      const worksheet = workbook.addWorksheet("Sheet 1");
+  //     const worksheet = workbook.addWorksheet("Sheet 1");
 
-      worksheet.columns = preHeaders(cliente);
-      const rows = utils.dentistNestedService(data, serviços, local.tabela);
-      worksheet.addRows(data);
-      //apply alignment to each line pos header
-      applyCellAlignment(rows, worksheet);
-      // merge header cell one by if use A1:C6 the only header available will be the first one
-      mergeC(worksheet);
+  //     worksheet.columns = preHeaders(cliente);
+  //     const rows = utils.dentistNestedService(data, serviços, local.tabela);
+  //     worksheet.addRows(data);
+  //     //apply alignment to each line pos header
+  //     applyCellAlignment(rows, worksheet);
+  //     // merge header cell one by if use A1:C6 the only header available will be the first one
+  //     mergeC(worksheet);
 
-      // Set response headers to indicate a downloadable Excel file
-      res.setHeader(
-        "Content-Type",
-        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-      );
-      // Send the Excel file as a buffer to the client
-      const buffer = await workbook.xlsx.writeBuffer();
-      res.send(buffer);
-    } catch (error) {
-      console.error(error);
-      res.status(500).send("Internal Server Error");
-    }
-  }
+  //     // Set response headers to indicate a downloadable Excel file
+  //     res.setHeader(
+  //       "Content-Type",
+  //       "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  //     );
+  //     // Send the Excel file as a buffer to the client
+  //     const buffer = await workbook.xlsx.writeBuffer();
+  //     res.send(buffer);
+  //   } catch (error) {
+  //     console.error(error);
+  //     res.status(500).send("Internal Server Error");
+  //   }
+  // }
 });
 module.exports = router;
