@@ -8,54 +8,53 @@ const ExtractJWT = passportJWT.ExtractJwt;
 require("dotenv").config();
 
 passport.use(
-    new LocalStrategy(async (username, password, done) => {
-        try {
-            const user = await User.findOne({ username: username });
-            if (!user) {
-                return done(null, false, { message: "Incorrect username" });
-            }
-            bcrypt.compare(password, user.password, (err, res) => {
-                if (res) {
-                    // passwords match! log user in
-                    return done(null, user);
-                } else {
-                    // passwords do not match!
-                    return done(null, false, { message: "Incorrect password" });
-                }
-            });
-        } catch (err) {
-            return done(err);
+  new LocalStrategy(async (username, password, done) => {
+    try {
+      const user = await User.findOne({ username: username });
+      if (!user) {
+        return done(null, false, { message: "Incorrect username" });
+      }
+      bcrypt.compare(password, user.password, (err, res) => {
+        if (res) {
+          // passwords match! log user in
+          return done(null, user);
+        } else {
+          // passwords do not match!
+          return done(null, false, { message: "Incorrect password" });
         }
-    })
+      });
+    } catch (err) {
+      return done(err);
+    }
+  }),
 );
 
 passport.use(
-    new JWTStrategy(
-        {
-            jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
-            secretOrKey: process.env.JwtKey,
-        },
-        async function (jwtPayload, cb) {
-            try {
-                const user = await User.findById(jwtPayload.id);
-                const userData = { id: user._id, username: user.username };
-                return cb(null, userData);
-            } catch (err) {
-                return cb(err);
-            }
-        }
-    )
+  new JWTStrategy(
+    {
+      jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
+      secretOrKey: process.env.JwtKey,
+    },
+    async function (jwtPayload, cb) {
+      try {
+        const user = await User.findById(jwtPayload.id);
+        const userData = { id: user._id, username: user.username };
+        return cb(null, userData);
+      } catch (err) {
+        console.log(err);
+        return cb(err);
+      }
+    },
+  ),
 );
 passport.serializeUser(function (user, done) {
-    // console.log(user);
-    done(null, user._id);
+  done(null, user._id);
 });
 passport.deserializeUser(async function (id, done) {
-    // console.log(id);
-    try {
-        const user = await User.findById(id);
-        done(null, user);
-    } catch (err) {
-        done(err);
-    }
+  try {
+    const user = await User.findById(id);
+    done(null, user);
+  } catch (err) {
+    done(err);
+  }
 });

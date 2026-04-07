@@ -9,9 +9,9 @@ describe("api routes", () => {
             msg: { message: "Test Local" },
         },
         {
-            name: "Dentista route",
-            url: "test-dentistas",
-            msg: { message: "Test Dentista" },
+            name: "cliente route",
+            url: "test-cliente",
+            msg: { message: "Test cliente" },
         },
 
         {
