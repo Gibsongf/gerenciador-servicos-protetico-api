@@ -15,7 +15,6 @@ exports.todos = asyncHandler(async (req, res) => {
     .populate("local")
     .populate("serviços")
     .exec();
-  console.log(all);
   if (all.length === 0) {
     res.status(404).json({ message: "Nenhum Cliente encontrado" });
   } else {
