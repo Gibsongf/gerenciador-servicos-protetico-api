@@ -16,11 +16,12 @@ exports.todos = asyncHandler(async (req, res) => {
     .sort({ nome: 1 })
     .exec();
   if (!all) {
-    res.sendStatus(404).json({ message: "Nenhum Produto foi encontrado" });
+    res.status(404).json({ message: "Nenhum Produto foi encontrado" });
+  } else {
+    res.status(200).json({
+      all,
+    });
   }
-  res.status(200).json({
-    all,
-  });
 });
 // Detalhes de um produto
 exports.detalhes = asyncHandler(async (req, res) => {

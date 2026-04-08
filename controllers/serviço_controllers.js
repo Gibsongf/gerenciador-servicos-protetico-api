@@ -20,11 +20,11 @@ exports.todos = asyncHandler(async (req, res) => {
     res.status(404).json({
       message: "Nenhum Serviço foi encontrado",
     });
+  } else {
+    res.status(200).json({
+      all,
+    });
   }
-
-  res.status(200).json({
-    all,
-  });
 });
 // Detalhes de um serviço
 exports.detalhes = asyncHandler(async (req, res) => {

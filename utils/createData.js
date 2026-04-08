@@ -78,7 +78,7 @@ exports.createServiçoTest = async (cliente, produto) => {
   return serviço;
 };
 
-const realProducts = {
+const fakeProducts = {
   "AEB (SPLINT)": [105, 95],
   "ARCO LINGUAL/BARRA PALATINA": [80, 80],
   "BARRA BOTÃO": [95, 87],
@@ -124,10 +124,10 @@ const realProducts = {
 };
 
 exports.realProducts = async (produtoArray) => {
-  const nomes = Object.keys(realProducts);
+  const nomes = Object.keys(fakeProducts);
   nomes.forEach(async (n) => {
-    const valorNormal = realProducts[n][0];
-    const valorReduzido = realProducts[n][1];
+    const valorNormal = fakeProducts[n][0];
+    const valorReduzido = fakeProducts[n][1];
 
     const produto = new Produto({
       nome: n,
@@ -138,47 +138,74 @@ exports.realProducts = async (produtoArray) => {
     await produto.save();
   });
 };
-const realLocal = [
+
+const fakeLocal = [
   {
-    nome: "Instituto Kalil",
-    endereço: "Rua João Pessoa, 454, Centro, SBC",
-    // tabela: "Reduzida",
+    nome: "Clínica Sorriso Perfeito",
+    endereço: "Rua das Flores, 123 - Centro, São Paulo - SP",
+    cep: "01001000",
+    telefone: "11912345678",
   },
   {
-    nome: "Clínica Fernanda",
-    endereço: "Dois de outubro, 126, Santa Terezinha, SBC",
-    // tabela: "Reduzida",
+    nome: "Odonto Vida Center",
+    endereço: "Av. Paulista, 987 - Bela Vista, São Paulo - SP",
+    cep: "01311100",
+    telefone: "11934567890",
   },
   {
-    nome: "Independente",
-    endereço: "livre",
-    // tabela: "Normal",
+    nome: "Clínica Dental Prime",
+    endereço: "Rua Augusta, 456 - Consolação, São Paulo - SP",
+    cep: "01305000",
+    telefone: "11998765432",
+  },
+  {
+    nome: "Sorrir Mais Odontologia",
+    endereço: "Av. Brigadeiro Faria Lima, 1500 - Itaim Bibi, São Paulo - SP",
+    cep: "01451000",
+    telefone: "11976543210",
+  },
+  {
+    nome: "Instituto Oral Saúde",
+    endereço: "Rua Vergueiro, 2000 - Vila Mariana, São Paulo - SP",
+    cep: "04101000",
+    telefone: "11965432109",
   },
 ];
 const localForCliente = {};
 
 exports.realLocal = async (localArray) => {
-  realLocal.forEach(async (info) => {
+  fakeLocal.forEach(async (info) => {
     const local = new Local(info);
     localArray.push(local);
     // localForCliente[local.nome] = local._id;
     await local.save();
   });
 };
-const realCliente = [
+
+const fakeCliente = [
   {
-    nome: "Fernanda Holanda",
-    tabela: "reduzida",
-    local: localForCliente["Clínica Fernanda"],
+    nome: "Lucas Andrade",
+    tabela: "Normal",
+    local: localForCliente["Clínica Sorriso Perfeito"],
   },
   {
-    nome: "Camila Treviso",
-    tabela: "Normal",
-    local: localForCliente["Independente"],
+    nome: "Mariana Costa",
+    tabela: "Reduzida",
+    local: localForCliente["Odonto Vida Center"],
   },
   {
-    nome: "Desiree Pellizzon",
+    nome: "Rafael Martins",
     tabela: "Normal",
-    local: localForCliente["Instituto kalil"],
+    local: localForCliente["Clínica Dental Prime"],
+  },
+  {
+    nome: "Fernanda Oliveira",
+    tabela: "Reduzida",
+    local: localForCliente["Sorrir Mais Odontologia"],
+  },
+  {
+    nome: "Bruno Carvalho",
+    tabela: "Normal",
+    local: localForCliente["Instituto Oral Saúde"],
   },
 ];

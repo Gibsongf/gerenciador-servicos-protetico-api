@@ -15,13 +15,14 @@ exports.todos = asyncHandler(async (req, res) => {
     .populate("local")
     .populate("serviços")
     .exec();
+  console.log(all);
   if (all.length === 0) {
-    res.sendStatus(404).json({ message: "Nenhum Cliente encontrado" });
+    res.status(404).json({ message: "Nenhum Cliente encontrado" });
+  } else {
+    res.status(200).json({
+      all,
+    });
   }
-
-  res.status(200).json({
-    all,
-  });
 });
 
 exports.detalhes = asyncHandler(async (req, res) => {

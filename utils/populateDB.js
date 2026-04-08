@@ -28,19 +28,19 @@ async function main() {
     }),
   );
   await realLocal(localArray);
-  console.log(localArray);
+  await realProducts(produtoArray);
+
   for (let i = 0; i < localArray.length; i++) {
-    // const local = await createLocal();
+    const local = await createLocal();
     await createCliente(localArray[i]._id, clienteArray);
   }
-  await realProducts(produtoArray);
-  let day = 1;
-  let date = () => `2024-04-${day}`;
-  for (let i = 0; i < 10; i++) {
-    await createServiço(clienteArray, produtoArray, date());
-    day++;
-  }
-  console.log("serviço saved");
+  // let day = 1;
+  // let date = () => `2026-04-${day}`;
+  // for (let i = 0; i < 10; i++) {
+  //   await createServiço(clienteArray, produtoArray, date());
+  //   day++;
+  // }
+  console.log("Done");
 
   mongoose.connection.close();
 }

@@ -19,11 +19,12 @@ exports.todos = asyncHandler(async (req, res) => {
     .sort({ nome: 1 })
     .exec();
   if (all.length === 0) {
-    res.sendStatus(404).json({ message: "Nenhum Local encontrado" });
+    res.status(404).json({ message: "Nenhum Local encontrado" });
+  } else {
+    res.status(200).json({
+      all,
+    });
   }
-  res.status(200).json({
-    all,
-  });
 });
 // Detalhes de um local
 exports.detalhes = asyncHandler(async (req, res) => {
