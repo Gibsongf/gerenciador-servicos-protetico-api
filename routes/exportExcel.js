@@ -23,7 +23,7 @@ const preHeaders = (cliente, user, local) => {
         "",
         "Informações do Pedido",
         "",
-        // `Clinica: ${local.nome}`,
+        `Clinica: ${local.nome}`,
         `${cliente.nome}`,
         " ",
       ],
