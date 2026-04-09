@@ -1,3 +1,4 @@
+require("dotenv").config();
 const createError = require("http-errors");
 const express = require("express");
 const passport = require("passport");
@@ -6,13 +7,11 @@ const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 const cors = require("cors");
 const session = require("express-session");
-
 const userRouter = require("./routes/user");
 const apiRouter = require("./routes/api");
 const app = express();
 require("./mongoConfig");
 require("./passport");
-require("dotenv").config();
 
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
