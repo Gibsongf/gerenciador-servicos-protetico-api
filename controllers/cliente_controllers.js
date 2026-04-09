@@ -33,7 +33,7 @@ exports.detalhes = asyncHandler(async (req, res) => {
     .populate("produto")
     .exec();
   if (cliente.length === 0) {
-    res.sendStatus(404).json({ message: "Cliente não encontrado" });
+    res.status(404).json({ message: "Cliente não encontrado" });
   }
   res.status(200).json({ cliente, serviços });
 });
