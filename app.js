@@ -13,6 +13,27 @@ const app = express();
 require("./mongoConfig");
 require("./passport");
 
+// SIMPLE CORS FIX - Try this first
+app.use(
+  cors({
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  }),
+);
+
+// IMPORTANT: Handle OPTIONS preflight for ALL routes
+app.options("*", (req, res) => {
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  res.header("Access-Control-Allow-Credentials", "true");
+  res.sendStatus(200);
+});
+
+// THEN your other middleware and routes
+app.use(logger("dev"));
+app.use(express.json());
+// ... rest of your code
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
