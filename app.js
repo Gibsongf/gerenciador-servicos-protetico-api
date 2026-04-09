@@ -13,21 +13,6 @@ const app = express();
 require("./mongoConfig");
 require("./passport");
 
-app.use(
-  cors({
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-  }),
-);
-
-app.options("*", (req, res) => {
-  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
-  res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
-  res.header("Access-Control-Allow-Credentials", "true");
-  res.sendStatus(200);
-});
-
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
@@ -47,9 +32,8 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use("/user", userRouter);
 app.use("/api", passport.authenticate("jwt", { session: false }), apiRouter);
-// app.use("/api", apiRouter);
+app.use("/user", userRouter);
 
 // put jwt token in this way more easy
 // catch 404 and forward to error handler
