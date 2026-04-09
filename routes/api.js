@@ -4,7 +4,6 @@ const local_controllers = require("../controllers/local_controllers");
 const serviço_controllers = require("../controllers/serviço_controllers");
 const produto_controllers = require("../controllers/produto_controllers");
 const router = express.Router();
-const passport = require("../passport");
 // GET for Test
 router.get("/test-cliente", cliente_controllers.test);
 router.get("/test-locais", local_controllers.test);
