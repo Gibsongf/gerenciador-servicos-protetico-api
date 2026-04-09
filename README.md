@@ -108,4 +108,3 @@ npm start
 - JWT (passport-jwt)
 - bcrypt (password hashing)
 - ExcelJS (Excel file generation)
-```
