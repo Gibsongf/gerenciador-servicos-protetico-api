@@ -11,6 +11,9 @@ exports.test = asyncHandler(async (req, res) => {
 // Read
 // Todos os serviços
 exports.todos = asyncHandler(async (req, res) => {
+  if (!req.user) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
   const all = await Serviço.find({ user: req.user.id })
     .populate("cliente")
     .populate("produtos.produto")
