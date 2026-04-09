@@ -32,7 +32,7 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use("/api", passport.authenticate("jwt", { session: false }), apiRouter);
+app.use("/api", apiRouter);
 app.use("/user", userRouter);
 
 // put jwt token in this way more easy
