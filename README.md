@@ -1,7 +1,8 @@
 ```markdown
 # Gerenciador de Serviços Protéticos - API
 
-Dental prosthetic service management API. CRUD operations for clients, locations, products, and service orders with JWT authentication and Excel export.
+Dental prosthetic service management API. CRUD operations for clients, locations, products,
+and service orders with JWT authentication and Excel export.
 
 ## Base URL
 
