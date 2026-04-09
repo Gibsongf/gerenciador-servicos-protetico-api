@@ -12,11 +12,7 @@ router.get("/test-serviços", serviço_controllers.test);
 router.get("/test-produtos", produto_controllers.test);
 
 // Main API route
-router.use(
-  "/servico",
-  passport.authenticate("jwt", { session: false }),
-  require("./serviço"),
-);
+router.use("/servico", require("./serviço"));
 router.use("/produto", require("./produto"));
 router.use("/local", require("./local"));
 router.use("/cliente", require("./cliente"));
